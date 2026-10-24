@@ -93,6 +93,10 @@ export class LocalStore implements MemoryStore {
     return [...(await this.load())];
   }
 
+  async count(): Promise<number> {
+    return (await this.load()).length;
+  }
+
   async health(): Promise<boolean> {
     return true;
   }

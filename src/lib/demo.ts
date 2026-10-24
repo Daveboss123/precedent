@@ -9,7 +9,7 @@
  * Day 12. Nothing about the world changes between them except memory.
  */
 
-import type { Candidate, Charter } from '../core/types.ts';
+import type { Candidate, Charter, Precedent } from '../core/types.ts';
 import type { NewPrecedentInput } from '../memory/precedent-repo.ts';
 import { writeCharter } from './charter.ts';
 import type { Runtime } from './runtime.ts';
@@ -158,8 +158,19 @@ const RULES: NewPrecedentInput[] = [
   },
 ];
 
-export async function runDemo(rt: Runtime): Promise<void> {
-  await rt.clear();
+export interface DemoOptions {
+  /**
+   * Wipe before running. Defaults to true on the local store and false on
+   * mainnet, because Walrus Memory is append-only and `clear()` refuses.
+   */
+  reset?: boolean;
+}
+
+export async function runDemo(
+  rt: Runtime,
+  options: DemoOptions = {},
+): Promise<void> {
+  if (options.reset ?? rt.mode === 'local') await rt.clear();
   await writeCharter(DEMO_CHARTER);
 
   const logBatch = async (phase: string): Promise<void> => {
@@ -179,8 +190,11 @@ export async function runDemo(rt: Runtime): Promise<void> {
   // block and the high-stakes threshold.
   await logBatch('Day 1');
 
+  // Keep the ids the store actually issued. A fresh mainnet ledger may not
+  // start at 1, and hardcoding `supersede(2, …)` would then overrule nothing.
+  const created: Precedent[] = [];
   for (const rule of RULES) {
-    await rt.repo.create(rule);
+    created.push(await rt.repo.create(rule));
   }
 
   // A first pass so the Auditor has a chance to flag any Day-1 contradiction.
@@ -210,7 +224,11 @@ export async function runDemo(rt: Runtime): Promise<void> {
     'The cheaper roaster the agent switched to was too acidic. Pay the premium and stay with Roaster A.',
   );
 
-  await rt.repo.supersede(2, {
+  // Rule #2 in the script, whatever id the store issued for it.
+  const priceRule = created[1];
+  if (!priceRule) throw new Error('Demo rules are out of sync.');
+
+  await rt.repo.supersede(priceRule.id, {
     action: 'buy',
     reason:
       'Pay the premium and stay with Roaster A. The cheaper beans were too acidic.',
@@ -229,8 +247,9 @@ export async function runDemo(rt: Runtime): Promise<void> {
     });
   }
 
-  // The Auditor's second act: a new general rule contradicts #1. The specific
-  // rule #7 is not a contradiction — it governs by being narrower.
+  // The Auditor's second act: a new general rule contradicts the first rule.
+  // The specific price rule is not a contradiction — it governs by being
+  // narrower.
   await rt.repo.create({
     domain: 'coffee',
     action: 'defer',

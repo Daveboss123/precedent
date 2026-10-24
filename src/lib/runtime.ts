@@ -28,7 +28,12 @@ export interface Runtime {
 
 function buildRuntime(): Runtime {
   const handle = createStore();
-  const ids = new FileIdAllocator(resolve('.data', 'ids.json'));
+  // Local and mainnet are different ledgers even when they share a namespace
+  // name. Keeping separate counters means a local demo can never consume the
+  // ids a fresh mainnet run is about to allocate.
+  const ids = new FileIdAllocator(
+    resolve('.data', `ids-${handle.mode}-${handle.namespace}.json`),
+  );
   const log = new DecisionLog(resolve('.data', 'decisions.json'));
   const repo = new PrecedentRepo({ store: handle.store, ids });
 

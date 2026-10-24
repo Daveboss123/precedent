@@ -33,6 +33,11 @@ interface RawClient {
   waitForRememberJob?(jobId: string): Promise<unknown>;
   recall(args: { query: string; limit?: number }): Promise<unknown>;
   analyze?(text: string): Promise<unknown>;
+  listMemories?(options?: {
+    cursor?: string;
+    limit?: number;
+    namespace?: string;
+  }): Promise<unknown>;
   health?(): Promise<unknown>;
 }
 
@@ -172,6 +177,43 @@ export class MemWalStore implements MemoryStore {
       200,
     );
     return memories.map((memory) => memory.text);
+  }
+
+  /**
+   * Count this namespace's memories.
+   *
+   * `listMemories` is metadata-only and paginated. `has_more` is the
+   * authoritative signal; a namespace filter can leave a page short or empty
+   * while more pages remain, so never stop on page length.
+   */
+  async count(): Promise<number> {
+    const client = await this.connect();
+    if (!client.listMemories) {
+      return (await this.list()).length;
+    }
+
+    let cursor: string | undefined;
+    let total = 0;
+
+    for (let page = 0; page < 50; page += 1) {
+      const result = await client.listMemories({
+        namespace: this.config.namespace,
+        limit: 500,
+        cursor,
+      });
+
+      total += asArray(result).length;
+
+      const record = (result ?? {}) as {
+        has_more?: boolean;
+        next_cursor?: string | null;
+      };
+
+      if (!record.has_more || !record.next_cursor) break;
+      cursor = record.next_cursor;
+    }
+
+    return total;
   }
 
   async health(): Promise<boolean> {

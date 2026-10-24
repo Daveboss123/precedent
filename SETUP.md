@@ -82,20 +82,32 @@ app is writing to `.data/`, not Walrus.
 
 ## 4. Mainnet smoke test
 
-Before filming, run the demo once with mainnet credentials:
+Before filming, run the whole story once with mainnet credentials:
 
-1. Click **Run demo**.
-2. Confirm the badge links to a real `MemWalAccount` object.
-3. Confirm the memory drawer shows records.
-4. Confirm at least 10 memories exist for the namespace:
-
-```ts
-// node --input-type=module
-import { MemWal } from '@mysten-incubation/memwal';
-const memwal = MemWal.create({ /* env */ });
-const page = await memwal.listMemories({ namespace: 'precedent', limit: 100 });
-console.log(page.memories.length);
+```powershell
+npm.cmd run smoke
 ```
+
+The script reads `.env.local`, refuses to run on the local store, checks the
+relayer, and refuses if the namespace already has memories (Walrus Memory is
+append-only). It then writes the scripted story, waits until the relayer reports
+at least 10 memories, verifies the `MemWalAccount` through Tatum, and writes
+`.data/mainnet-smoke.json` as evidence.
+
+A successful run ends with:
+
+```
+✓ Mainnet run complete: 10+ memories and a verified account.
+```
+
+If the namespace already has memories, set a fresh name and restart:
+
+```dotenv
+MEMWAL_NAMESPACE=precedent-demo-1
+```
+
+Then run `npm.cmd run smoke` again. The web app reads the same namespace, so the
+ledger you just wrote is the ledger it shows.
 
 `listMemories` is metadata-only and does not decrypt content.
 

@@ -26,6 +26,11 @@ export interface MemoryStore {
    */
   analyze(text: string): Promise<RecalledMemory[]>;
   /**
+   * Total memories in this namespace, when the backend can count them.
+   * Used to refuse a second scripted demo on an append-only ledger.
+   */
+  count?(): Promise<number>;
+  /**
    * Best-effort raw dump for the trust drawer.
    * Optional: a remote store may not support exhaustive listing.
    */
