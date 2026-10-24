@@ -107,7 +107,7 @@ export function matchesCondition(
   return true;
 }
 
-function conditionSpecificity(condition: Condition | null | undefined): number {
+export function conditionSpecificity(condition: Condition | null | undefined): number {
   if (!condition) return 0;
 
   let count = 0;

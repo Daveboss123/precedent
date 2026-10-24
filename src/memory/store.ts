@@ -25,5 +25,10 @@ export interface MemoryStore {
    * the observation.
    */
   analyze(text: string): Promise<RecalledMemory[]>;
+  /**
+   * Best-effort raw dump for the trust drawer.
+   * Optional: a remote store may not support exhaustive listing.
+   */
+  list?(): Promise<string[]>;
   health(): Promise<boolean>;
 }

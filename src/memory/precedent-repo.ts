@@ -37,7 +37,7 @@ import {
   serializeFinding,
 } from '../core/audit.ts';
 import type { AuditFinding } from '../core/audit.ts';
-import { serializeOutcome } from '../core/outcome.ts';
+import { parseOutcome, serializeOutcome } from '../core/outcome.ts';
 import type { IdAllocator } from './ids.ts';
 import type { MemoryStore, RecalledMemory } from './store.ts';
 
@@ -222,6 +222,18 @@ export class PrecedentRepo {
 
   async recordOutcome(outcome: Outcome): Promise<void> {
     await this.write(serializeOutcome(outcome, this.now().toISOString()));
+  }
+
+  /** What actually happened, newest last. Feeds the approval rate. */
+  async outcomes(): Promise<Outcome[]> {
+    const memories = await this.store.recall(
+      'OUTCOME accepted returned',
+      this.recallLimit,
+    );
+
+    return memories
+      .map((memory) => parseOutcome(memory.text))
+      .filter((outcome): outcome is Outcome => outcome !== null);
   }
 
   /**

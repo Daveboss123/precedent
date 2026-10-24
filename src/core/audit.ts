@@ -11,6 +11,7 @@
  */
 
 import type { Action, Precedent } from './types.ts';
+import { conditionSpecificity } from './resolve.ts';
 import { quote, splitFields, toRecord, unquote } from './wire.ts';
 
 export interface AuditFinding {
@@ -36,6 +37,18 @@ function normaliseScope(scope: string[]): Set<string> {
 }
 
 /**
+ * Static specificity, mirroring the resolver's tiebreak.
+ *
+ * A conditional rule is narrower than an unconditional one; a longer scope is
+ * narrower than a shorter one. If one rule is strictly narrower, the resolver
+ * will let it govern, so it is not a contradiction — it is hierarchy. Only
+ * equally narrow rules can genuinely tie.
+ */
+function structuralSpecificity(precedent: Precedent): number {
+  return conditionSpecificity(precedent.when) * 10 + precedent.scope.length;
+}
+
+/**
  * Active precedents that claim the same ground but prescribe different actions.
  * Two rules can both be "right" and still be impossible to follow at once —
  * that is exactly the state the user needs to be shown.
@@ -57,6 +70,7 @@ export function findContradictions(precedents: Precedent[]): AuditFinding[] {
 
       if (a.domain !== b.domain) continue;
       if (a.action === b.action) continue;
+      if (structuralSpecificity(a) !== structuralSpecificity(b)) continue;
 
       const scopeA = normaliseScope(a.scope);
       const scopeB = normaliseScope(b.scope);

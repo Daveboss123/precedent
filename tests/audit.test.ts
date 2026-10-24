@@ -91,6 +91,18 @@ test('findings are deterministic and ordered by first precedent id', () => {
   assert.equal(first.length, 3);
 });
 
+test('a narrower rule is hierarchy, not contradiction', () => {
+  const general = precedent(7, { action: 'buy' });
+  const specific = precedent(9, {
+    action: 'defer',
+    when: { priceIncreaseAtLeast: 0.15 },
+  });
+
+  const findings = findContradictions([general, specific]);
+
+  assert.deepEqual(findings, []);
+});
+
 test('a finding survives a round trip through memory', () => {
   const [finding] = findContradictions([
     precedent(7, { action: 'buy' }),

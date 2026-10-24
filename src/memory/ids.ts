@@ -107,6 +107,14 @@ export class FileIdAllocator implements IdAllocator {
     });
   }
 
+  /** Reset to 1. Only safe when the ledger it numbered has been cleared too. */
+  async reset(): Promise<void> {
+    await this.run(async () => {
+      this.state = { next: 1 };
+      await this.persist(this.state);
+    });
+  }
+
   async persist(state: IdState): Promise<void> {
     await mkdir(dirname(this.path), { recursive: true });
     const temp = `${this.path}.tmp`;

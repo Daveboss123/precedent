@@ -5,6 +5,9 @@
   "type": "module",
   "description": "An agent that remembers your rules, and cites them before it spends your money.",
   "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "test": "node --test tests/resolve.test.ts tests/supersession.test.ts tests/audit.test.ts tests/repo.test.ts"
   },
   "engines": {
@@ -14,5 +17,11 @@
     "next": "^15.5.28",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "^6.0.3"
   }
 }

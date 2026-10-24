@@ -158,6 +158,21 @@ export class MemWalStore implements MemoryStore {
       .filter((memory): memory is RecalledMemory => memory !== null);
   }
 
+  /**
+   * Best-effort raw dump for the trust drawer.
+   *
+   * The relayer has no "list everything" call, so this is a broad recall. The
+   * drawer labels it as a sample when the result fills the limit — never claim
+   * completeness the store cannot prove.
+   */
+  async list(): Promise<string[]> {
+    const memories = await this.recall(
+      'PRECEDENT SUPERSEDES AUDIT OUTCOME OBSERVATION',
+      200,
+    );
+    return memories.map((memory) => memory.text);
+  }
+
   async health(): Promise<boolean> {
     const client = await this.connect();
     if (!client.health) return true;
