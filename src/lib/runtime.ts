@@ -34,7 +34,9 @@ function buildRuntime(): Runtime {
   const ids = new FileIdAllocator(
     resolve('.data', `ids-${handle.mode}-${handle.namespace}.json`),
   );
-  const log = new DecisionLog(resolve('.data', 'decisions.json'));
+  const log = new DecisionLog(
+    resolve('.data', `decisions-${handle.mode}-${handle.namespace}.json`),
+  );
   const repo = new PrecedentRepo({ store: handle.store, ids });
 
   return {

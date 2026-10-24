@@ -114,7 +114,7 @@ export async function verifyMemoryWrite(
           explorerUrl: explorerUrl('object', input.accountId),
           detail: `MemWalAccount ${short(
             input.accountId,
-          )} was not found on Sui mainnet.`,
+          )} was not found on Sui mainnet. If this is your wallet address, use the MemWalAccount object ID instead.`,
         };
       }
 

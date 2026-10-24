@@ -15,9 +15,12 @@ the submission.
 4. Add both to `.env.local`:
 
 ```dotenv
-TATUM_API_KEY=your-key
-TATUM_SUI_RPC_URL=https://sui-mainnet.gateway.tatum.io
+TATUM_API_KEY=your-mainnet-key
+TATUM_SUI_RPC_URL=https://sui-mainnet.gateway.tatum.io/graphql
 ```
+
+Tatum retired its Sui JSON-RPC surface; the mainnet gateway now serves GraphQL
+at `/graphql`. The client accepts either the bare gateway root or the full URL.
 
 Check it:
 
@@ -36,7 +39,10 @@ called "verified."
 2. Connect a Sui wallet. This wallet is the **owner**; its address is the
    `SUI address` / `Account ID (SUI)` on the submission form.
 3. Create a **Walrus Memory account**. The resulting object ID is
-   `MEMWAL_ACCOUNT_ID`.
+   `MEMWAL_ACCOUNT_ID`. This is **not** the wallet address shown at the top of
+   the dashboard: the wallet is the owner, the object ID is the account. If the
+   badge says the account was not found, you almost certainly pasted the wallet
+   address.
 4. Create a **delegate key** for this app. You get:
    - a private key → `MEMWAL_KEY`
    - a public key → `MEMWAL_AGENT_ID` (this is what the form calls

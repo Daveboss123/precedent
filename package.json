@@ -9,7 +9,8 @@
     "build": "next build",
     "start": "next start",
     "test": "node --test tests/resolve.test.ts tests/supersession.test.ts tests/audit.test.ts tests/repo.test.ts tests/tatum.test.ts",
-    "smoke": "node --env-file-if-exists=.env.local scripts/mainnet-smoke.ts"
+    "smoke": "node --env-file-if-exists=.env.local scripts/mainnet-smoke.ts",
+    "smoke:verify": "node --env-file-if-exists=.env.local scripts/mainnet-smoke.ts --verify-only"
   },
   "engines": {
     "node": ">=22.23.4"

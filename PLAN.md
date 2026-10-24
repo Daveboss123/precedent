@@ -141,7 +141,7 @@ Walrus Memory's thesis is memory that follows you across tools. Most teams will 
 ## 5. Tatum integration (three layers, one of them the differentiator)
 
 **Layer 1 — Verify memory onchain (the on-thesis move)**
-After every `remember()`, fetch the Walrus object/blob via Tatum Sui RPC (`https://sui-mainnet.gateway.tatum.io`, JSON-RPC, `x-api-key`). Confirm existence, capture the object ID and checkpoint/epoch, and surface a **clickable "verified onchain" badge** that opens the object in SuiVision or SuiScan. Hovering shows the checkpoint number. Store the verification result as memory metadata.
+After every `remember()`, fetch the Walrus object/blob via Tatum's Sui GraphQL gateway (`https://sui-mainnet.gateway.tatum.io/graphql`, `x-api-key`). Confirm existence, capture the object ID and checkpoint/epoch, and surface a **clickable "verified onchain" badge** that opens the object in SuiVision or SuiScan. Hovering shows the checkpoint number. Store the verification result as memory metadata.
 
 Rules: the link must resolve to a real object before you film; a dead explorer link is worse than no link. And the badge must be *live* — if verification fails, it says so rather than silently hiding.
 
@@ -203,7 +203,7 @@ Rules of thumb:
 | App | Next.js 15 + TypeScript, Tailwind + shadcn | Fast UI, deploy on Vercel |
 | Memory | `@mysten-incubation/memwal` | **Pin Node 22.23.4+** — the SDK requires it |
 | Relayer | `https://relayer.memory.walrus.xyz` | Production/mainnet, not staging |
-| Onchain reads | Tatum Sui RPC, JSON-RPC + `x-api-key` | `sui-mainnet.gateway.tatum.io` |
+| Onchain reads | Tatum Sui GraphQL + `x-api-key` | `sui-mainnet.gateway.tatum.io/graphql` |
 | Bot | `grammy` (Telegram) | Shares the same memory client |
 | Local state | SQLite/Postgres | Catalog cache + job queue **only** — never let this become the memory |
 | Payments | x402 client + paid endpoint | Fallback: Sui transfer + receipt |

@@ -3,10 +3,9 @@
  *
  * Deliberate choices:
  *
- * 1. The SDK is imported dynamically, through a variable specifier. It is an
- *    optional dependency: the core must build and test on a machine that has
- *    never run `npm install`. If the package is missing, this throws a message
- *    that says so instead of a module-resolution stack trace.
+ * 1. The SDK is imported statically. A variable `import()` becomes a webpack
+ *    context module in the Next server bundle and fails at runtime with a
+ *    misleading "SDK not installed" error. The package is a real dependency.
  *
  * 2. Result shapes are normalised defensively. The SDK is in beta and the
  *    relayer is a separate service; a demo that crashes because a field was
@@ -15,6 +14,8 @@
  * 3. One client per namespace. Recall is scoped by account + namespace, so
  *    namespaces are the unit of isolation, not a filter applied afterwards.
  */
+
+import { MemWal } from '@mysten-incubation/memwal';
 
 import type { MemoryStore, RecalledMemory } from './store.ts';
 
@@ -102,34 +103,14 @@ export class MemWalStore implements MemoryStore {
   async connect(): Promise<RawClient> {
     if (this.clientPromise) return this.clientPromise;
 
-    this.clientPromise = (async () => {
-      // Variable specifier: keeps this an optional dependency at build time.
-      const specifier = '@mysten-incubation/memwal';
-      let module: Record<string, unknown>;
-
-      try {
-        module = (await import(specifier)) as Record<string, unknown>;
-      } catch {
-        throw new Error(
-          `Walrus Memory SDK not installed. Run: npm install ${specifier}`,
-        );
-      }
-
-      const factory = module.MemWal as
-        | { create?: (config: Record<string, unknown>) => RawClient }
-        | undefined;
-
-      if (!factory?.create) {
-        throw new Error('Walrus Memory SDK does not expose MemWal.create().');
-      }
-
-      return factory.create({
+    this.clientPromise = Promise.resolve(
+      MemWal.create({
         key: this.config.key,
         accountId: this.config.accountId,
         serverUrl: this.config.serverUrl ?? MAINNET_RELAYER,
         namespace: this.config.namespace,
-      });
-    })();
+      }) as unknown as RawClient,
+    );
 
     return this.clientPromise;
   }

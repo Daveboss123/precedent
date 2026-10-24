@@ -8,10 +8,11 @@
  *   3. refuse to run if the namespace already has memories (append-only)
  *   4. execute the scripted story through the real repository
  *   5. count the memories the relayer reports (the hackathon needs 10+)
- *   6. verify the MemWalAccount and delegate key through Tatum's Sui RPC
+ *   6. verify the MemWalAccount and delegate key through Tatum's Sui GraphQL
  *
  * Usage:
- *   npm.cmd run smoke
+ *   npm.cmd run smoke                 # write the story, then verify
+ *   npm.cmd run smoke -- --verify-only  # re-check an existing ledger
  *
  * Credentials are read from `.env.local` by Node's `--env-file-if-exists`.
  * The script never prints a private key.
@@ -24,8 +25,10 @@ import { runDemo } from '../src/lib/demo.ts';
 import { getRuntime } from '../src/lib/runtime.ts';
 import { createTatumClient } from '../src/tatum/client.ts';
 import { verifyMemoryWrite } from '../src/tatum/verify.ts';
+import type { Verification } from '../src/tatum/verify.ts';
 
 const REQUIRED = ['MEMWAL_KEY', 'MEMWAL_ACCOUNT_ID'] as const;
+const verifyOnly = process.argv.includes('--verify-only');
 
 function fail(message: string): never {
   console.error(`\n✗ ${message}\n`);
@@ -34,6 +37,31 @@ function fail(message: string): never {
 
 function line(label: string, value: string | number): void {
   console.log(`  ${label.padEnd(18)} ${value}`);
+}
+
+/**
+ * A transient gateway timeout should not invalidate a run that already wrote
+ * real memories. Retry before declaring the badge broken.
+ */
+async function verifyWithRetry(attempts = 3): Promise<Verification> {
+  let last: Verification | null = null;
+
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    last = await verifyMemoryWrite({
+      client: createTatumClient(),
+      accountId: process.env.MEMWAL_ACCOUNT_ID,
+      agentPublicKey: process.env.MEMWAL_AGENT_ID,
+    });
+
+    if (last.status === 'verified') return last;
+
+    if (attempt < attempts - 1) {
+      console.log(`  … ${last.status}; retrying in 5s`);
+      await new Promise((resolvePromise) => setTimeout(resolvePromise, 5_000));
+    }
+  }
+
+  return last as Verification;
 }
 
 async function main(): Promise<void> {
@@ -52,11 +80,18 @@ async function main(): Promise<void> {
     );
   }
 
-  console.log('\nPrecedent — mainnet smoke test\n');
+  console.log(
+    `\nPrecedent — mainnet ${verifyOnly ? 'verification' : 'smoke test'}\n`,
+  );
   line('mode', rt.mode);
   line('namespace', rt.namespace);
   line('account', short(process.env.MEMWAL_ACCOUNT_ID ?? ''));
-  line('delegate', process.env.MEMWAL_AGENT_ID ? short(process.env.MEMWAL_AGENT_ID) : 'not set');
+  line(
+    'delegate',
+    process.env.MEMWAL_AGENT_ID
+      ? short(process.env.MEMWAL_AGENT_ID)
+      : 'not set',
+  );
 
   console.log('\n→ Relayer health');
   const healthy = await rt.store.health();
@@ -66,34 +101,39 @@ async function main(): Promise<void> {
   console.log('\n→ Existing memories');
   const before = (await rt.store.count?.()) ?? 0;
   line('count', before);
-  if (before > 0) {
+
+  if (!verifyOnly && before > 0) {
     fail(
       `Namespace "${rt.namespace}" already has ${before} memories. Walrus Memory is append-only; set MEMWAL_NAMESPACE to a fresh name in .env.local and run again.`,
     );
   }
 
-  console.log('\n→ Running the scripted story (this writes real memories)');
   const started = Date.now();
-  const heartbeat = setInterval(() => {
-    const seconds = Math.round((Date.now() - started) / 1000);
-    process.stdout.write(`  … ${seconds}s\n`);
-  }, 10_000);
+  let after = before;
 
-  try {
-    await runDemo(rt);
-  } finally {
-    clearInterval(heartbeat);
-  }
-  console.log(`  done in ${Math.round((Date.now() - started) / 1000)}s`);
+  if (!verifyOnly) {
+    console.log('\n→ Running the scripted story (this writes real memories)');
+    const heartbeat = setInterval(() => {
+      const seconds = Math.round((Date.now() - started) / 1000);
+      process.stdout.write(`  … ${seconds}s\n`);
+    }, 10_000);
 
-  console.log('\n→ Counting memories reported by the relayer');
-  let after = (await rt.store.count?.()) ?? 0;
-  for (let attempt = 0; attempt < 12 && after < 10; attempt += 1) {
-    await new Promise((resolvePromise) => setTimeout(resolvePromise, 5_000));
-    after = (await rt.store.count?.()) ?? after;
-    process.stdout.write(`  … ${after} so far\n`);
+    try {
+      await runDemo(rt);
+    } finally {
+      clearInterval(heartbeat);
+    }
+    console.log(`  done in ${Math.round((Date.now() - started) / 1000)}s`);
+
+    console.log('\n→ Counting memories reported by the relayer');
+    after = (await rt.store.count?.()) ?? 0;
+    for (let attempt = 0; attempt < 12 && after < 10; attempt += 1) {
+      await new Promise((resolvePromise) => setTimeout(resolvePromise, 5_000));
+      after = (await rt.store.count?.()) ?? after;
+      process.stdout.write(`  … ${after} so far\n`);
+    }
+    line('count', after);
   }
-  line('count', after);
 
   if (after < 10) {
     fail(
@@ -102,22 +142,19 @@ async function main(): Promise<void> {
   }
 
   console.log('\n→ Verifying the Walrus Memory account through Tatum');
-  const verification = await verifyMemoryWrite({
-    client: createTatumClient(),
-    accountId: process.env.MEMWAL_ACCOUNT_ID,
-    agentPublicKey: process.env.MEMWAL_AGENT_ID,
-  });
+  const verification = await verifyWithRetry();
   line('status', verification.status);
   line('checkpoint', verification.checkpoint ?? '—');
   line('detail', verification.detail);
 
   const report = {
     at: new Date().toISOString(),
+    verifyOnly,
     network: 'sui-mainnet',
     namespace: rt.namespace,
     accountId: process.env.MEMWAL_ACCOUNT_ID ?? null,
     agentId: process.env.MEMWAL_AGENT_ID ?? null,
-    memoriesBefore: before,
+    memoriesBefore: verifyOnly ? null : before,
     memoriesAfter: after,
     relayerHealthy: healthy,
     verification,
@@ -137,7 +174,9 @@ async function main(): Promise<void> {
     );
   }
 
-  console.log('\n✓ Mainnet run complete: 10+ memories and a verified account.\n');
+  console.log(
+    `\n✓ Mainnet ledger verified: ${after} memories and a verified account.\n`,
+  );
 }
 
 function short(value: string): string {
