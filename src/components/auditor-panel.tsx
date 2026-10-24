@@ -79,17 +79,18 @@ export function AuditorPanel({
   return (
     <section className="panel">
       <div className="panel-head">
-        <span className="panel-title">Auditor</span>
-        <span className="chip ask">
-          {findings.length} finding{findings.length === 1 ? '' : 's'}
+        <h2 className="panel-title">Rules that disagree</h2>
+        <span className="panel-note">
+          {findings.length} found
         </span>
       </div>
-      <div className="panel-body">
-        {findings.length === 0 && (
-          <div className="empty">No live contradictions in the active ledger.</div>
-        )}
 
-        {findings.map((finding) => {
+      {findings.length === 0 ? (
+        <div className="empty" style={{ marginTop: 16 }}>
+          No rules disagree right now.
+        </div>
+      ) : (
+        findings.map((finding) => {
           const a = precedents.find(
             (precedent) => precedent.id === finding.precedentIds[0],
           );
@@ -98,75 +99,86 @@ export function AuditorPanel({
           );
 
           return (
-            <div className="finding" key={finding.precedentIds.join('-')}>
-              <div className="finding-title">Contradiction</div>
+            <article className="finding" key={finding.precedentIds.join('-')}>
+              <div className="finding-head">
+                <span className="stamp stamp--ask">Rules disagree</span>
+                <span className="finding-ids">
+                  #{finding.precedentIds.join(' vs #')}
+                </span>
+              </div>
+
               <p>{finding.summary}</p>
+
+              {a && b && (
+                <div className="finding-quotes">
+                  <div className="finding-quote">
+                    <b>#{a.id}</b>
+                    {a.reason}
+                  </div>
+                  <div className="finding-quote">
+                    <b>#{b.id}</b>
+                    {b.reason}
+                  </div>
+                </div>
+              )}
+
               <div className="finding-actions">
                 {a && b && (
                   <>
                     <button
-                      className="btn"
+                      className="btn btn--ghost btn--small"
                       disabled={busy}
                       onClick={() =>
-                        onSupersede(
-                          b.id,
-                          a.action,
-                          `Kept #${a.id}: ${a.reason}`,
-                        )
+                        onSupersede(b.id, a.action, `Kept #${a.id}: ${a.reason}`)
                       }
                     >
-                      Keep #{a.id} ({a.action})
+                      Keep #{a.id}
                     </button>
                     <button
-                      className="btn"
+                      className="btn btn--ghost btn--small"
                       disabled={busy}
                       onClick={() =>
-                        onSupersede(
-                          a.id,
-                          b.action,
-                          `Kept #${b.id}: ${b.reason}`,
-                        )
+                        onSupersede(a.id, b.action, `Kept #${b.id}: ${b.reason}`)
                       }
                     >
-                      Keep #{b.id} ({b.action})
+                      Keep #{b.id}
                     </button>
                   </>
                 )}
               </div>
-            </div>
+            </article>
           );
-        })}
+        })
+      )}
 
-        <div className="ask-box">
-          <form onSubmit={ask}>
-            <div className="field">
-              <label htmlFor="auditor-question">Ask the Auditor</label>
-              <input
-                id="auditor-question"
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-                placeholder="Why did you buy the beans?"
-              />
-            </div>
-            <div className="form-actions">
-              <button className="btn" disabled={!question.trim()}>
-                Ask
-              </button>
-            </div>
-          </form>
-
-          {answer && (
-            <div className={`answer-text ${answer.refusal ? 'muted' : ''}`}>
-              {answer.text}
-            </div>
-          )}
-
-          <div className="drawer-note">
-            Read-only delegate. It sees precedents, observations and outcomes. It
-            cannot see the finance namespace — that boundary is the demo.
-          </div>
+      <form className="ask-form" onSubmit={ask}>
+        <div className="field">
+          <label htmlFor="auditor-question">Ask why</label>
+          <input
+            id="auditor-question"
+            value={question}
+            onChange={(event) => setQuestion(event.target.value)}
+            placeholder="Why did you buy the beans?"
+          />
         </div>
-      </div>
+        <div className="form-actions" style={{ justifyContent: 'flex-start' }}>
+          <button className="btn btn--dark" disabled={!question.trim()}>
+            Ask
+          </button>
+        </div>
+      </form>
+
+      {answer && (
+        <div
+          className={`ask-answer ${answer.refusal ? 'ask-answer--refusal' : ''}`}
+        >
+          {answer.text}
+        </div>
+      )}
+
+      <p className="note">
+        Read-only. It can see rules and outcomes, not your money.
+      </p>
     </section>
   );
 }

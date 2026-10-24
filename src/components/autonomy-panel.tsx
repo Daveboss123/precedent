@@ -8,65 +8,38 @@ interface Props {
 }
 
 export function AutonomyPanel({ autonomy, approvalRate }: Props) {
-  const unasked = autonomy.acted + autonomy.asked;
-
-  // The headline is the latest phase with a meaningful sample. A single
-  // post-reversal decision is real, but 1/1 = 100% is not a claim worth
-  // leading with — the phase bars show it without overselling it.
-  const substantive = [...autonomy.phases]
-    .reverse()
-    .find((phase) => phase.total >= 3);
-  const headline =
-    substantive ?? autonomy.phases[autonomy.phases.length - 1] ?? null;
-
   return (
-    <section className="panel">
+    <section className="panel autonomy-panel">
       <div className="panel-head">
-        <span className="panel-title">Autonomy</span>
-        <span className="chip mono">
-          {autonomy.acted}/{unasked} overall
+        <h2 className="panel-title">Autonomy</h2>
+        <span className="panel-note">
+          {pct(autonomy.autonomy)} handled without asking
+          {approvalRate !== null && ` · ${pct(approvalRate)} held up`}
         </span>
       </div>
-      <div className="panel-body">
-        <div className="metrics">
-          <div className="metric">
-            <div className="metric-value gold">
-              {pct(headline ? headline.autonomy : autonomy.autonomy)}
-            </div>
-            <div className="metric-label">
-              {headline ? `autonomy · ${headline.phase}` : 'decisions taken without asking'}
-            </div>
-          </div>
-          <div className="metric">
-            <div className="metric-value">
-              {approvalRate === null ? '—' : pct(approvalRate)}
-            </div>
-            <div className="metric-label">outcomes that held up</div>
-          </div>
+
+      {autonomy.phases.length === 0 ? (
+        <div className="empty" style={{ marginTop: 16 }}>
+          No decisions yet.
         </div>
-
-        {autonomy.phases.map((phase) => (
-          <div className="phase" key={phase.phase}>
-            <div className="phase-head">
-              <span>{phase.phase}</span>
-              <b>{pct(phase.autonomy)}</b>
+      ) : (
+        <div className="autonomy-grid">
+          {autonomy.phases.map((phase) => (
+            <div className="phase" key={phase.phase}>
+              <div className="phase-top">
+                <span>{phase.phase}</span>
+                <b>{pct(phase.autonomy)}</b>
+              </div>
+              <div className="bar">
+                <span style={{ width: `${Math.round(phase.autonomy * 100)}%` }} />
+              </div>
+              <p>
+                {phase.acted} handled · {phase.asked} asked · {phase.blocked} blocked
+              </p>
             </div>
-            <div className="bar">
-              <div
-                className="bar-fill"
-                style={{ width: `${Math.round(phase.autonomy * 100)}%` }}
-              />
-            </div>
-            <div className="phase-note">
-              {phase.acted} acted · {phase.asked} asked · {phase.blocked} blocked
-            </div>
-          </div>
-        ))}
-
-        {autonomy.phases.length === 0 && (
-          <div className="empty">No decisions logged yet. Run the demo.</div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

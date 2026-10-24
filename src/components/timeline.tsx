@@ -11,7 +11,7 @@ interface Props {
 export function Timeline({ precedents, mode }: Props) {
   if (precedents.length === 0) {
     return (
-      <div className="empty">
+      <div className="empty" style={{ marginTop: 16 }}>
         No precedents yet. Every answer the agent receives becomes one.
       </div>
     );
@@ -26,10 +26,10 @@ export function Timeline({ precedents, mode }: Props) {
     <div className="timeline">
       <div className="timeline-legend">
         <span>
-          <i className="dot" /> active
+          <i className="legend-dot" /> active
         </span>
         <span>
-          <i className="dot overruled" /> overruled
+          <i className="legend-dot legend-dot--overruled" /> overruled
         </span>
         <span>append-only — nothing is deleted</span>
       </div>
@@ -67,13 +67,13 @@ function Node({ precedent, mode }: { precedent: Precedent; mode: StoreMode }) {
         ? 'ask'
         : precedent.action === 'block'
           ? 'block'
-          : 'gold';
+          : 'ask';
 
   return (
-    <div className={`node ${precedent.active ? '' : 'overruled'}`}>
+    <article className={`node ${precedent.active ? '' : 'is-overruled'}`}>
       <div className="node-head">
         <span className="node-id">#{precedent.id}</span>
-        <span className={`chip ${actionClass}`}>{precedent.action}</span>
+        <span className={`stamp stamp--${actionClass}`}>{precedent.action}</span>
         <span className="node-scope">{precedent.scope.join(' · ')}</span>
         <span className="node-date">{precedent.createdAt.slice(0, 10)}</span>
       </div>
@@ -84,24 +84,18 @@ function Node({ precedent, mode }: { precedent: Precedent; mode: StoreMode }) {
         <div className="node-when">when {describeCondition(precedent.when)}</div>
       )}
 
-      {(precedent.supersedes !== null || precedent.supersededBy !== null) && (
-        <div className="node-link">
-          {precedent.supersedes !== null && <>supersedes #{precedent.supersedes}</>}
-          {precedent.supersedes !== null && precedent.supersededBy !== null && ' · '}
-          {precedent.supersededBy !== null && (
-            <span className="overruled">
-              superseded by #{precedent.supersededBy}
-            </span>
-          )}
-        </div>
-      )}
-
-      <div className="node-badge">
-        <span className={`chip ${mode === 'mainnet' ? 'mainnet' : 'local'}`}>
-          {mode === 'mainnet' ? 'mainnet memory' : 'local memory'}
-        </span>
+      <div className="node-foot">
+        <span>{mode === 'mainnet' ? 'Walrus mainnet' : 'Local memory'}</span>
+        {precedent.supersedes !== null && (
+          <span>supersedes #{precedent.supersedes}</span>
+        )}
+        {precedent.supersededBy !== null && (
+          <span className="node-overruled">
+            superseded by #{precedent.supersededBy}
+          </span>
+        )}
       </div>
-    </div>
+    </article>
   );
 }
 

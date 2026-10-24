@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Verification } from '../tatum/verify.ts';
 
 /**
- * The top-bar truth about Tatum.
+ * The rail's truth about Tatum.
  *
  * It fetches once on mount, then only when clicked. `verified` links to the
  * explorer; `reachable` is a checkpoint, not a claim about a memory; and a
@@ -46,18 +46,19 @@ export function TatumBadge() {
   }, [check]);
 
   if (!verification) {
-    return <span className="chip local">checking Sui…</span>;
+    return <span className="tatum tatum--pending">Checking Sui…</span>;
   }
 
   if (verification.status === 'verified' && verification.explorerUrl) {
     return (
       <a
-        className="chip mainnet"
+        className="tatum tatum--verified"
         href={verification.explorerUrl}
         target="_blank"
         rel="noreferrer"
         title={verification.detail}
       >
+        <span className="tatum-dot" />
         Sui verified · #{verification.checkpoint}
       </a>
     );
@@ -66,11 +67,12 @@ export function TatumBadge() {
   if (verification.status === 'reachable') {
     return (
       <button
-        className="chip mainnet"
+        className="tatum tatum--verified"
         onClick={() => void check(true)}
         disabled={checking}
         title={verification.detail}
       >
+        <span className="tatum-dot" />
         Sui mainnet · #{verification.checkpoint}
       </button>
     );
@@ -79,11 +81,12 @@ export function TatumBadge() {
   if (verification.status === 'failed') {
     return (
       <button
-        className="chip block"
+        className="tatum tatum--failed"
         onClick={() => void check(true)}
         disabled={checking}
         title={verification.detail}
       >
+        <span className="tatum-dot" />
         Tatum check failed
       </button>
     );
@@ -91,11 +94,12 @@ export function TatumBadge() {
 
   return (
     <button
-      className="chip local"
+      className="tatum tatum--pending"
       onClick={() => void check(true)}
       disabled={checking}
       title={verification.detail}
     >
+      <span className="tatum-dot" />
       Tatum not configured
     </button>
   );

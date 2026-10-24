@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { runDemo } from '../../../lib/demo.ts';
 import { jsonError } from '../../../lib/http.ts';
 import { getRuntime } from '../../../lib/runtime.ts';
-import { buildState } from '../../../lib/state.ts';
+import { buildState, invalidateState } from '../../../lib/state.ts';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,6 +25,7 @@ export async function POST() {
     }
 
     await runDemo(rt);
+    invalidateState();
     return NextResponse.json(await buildState());
   } catch (error) {
     return jsonError(

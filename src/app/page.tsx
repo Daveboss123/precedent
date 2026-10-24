@@ -1,5 +1,5 @@
-import { Ledger } from '../components/ledger.tsx';
+import { Landing } from '../components/landing.tsx';
 
 export default function Page() {
-  return <Ledger />;
+  return <Landing />;
 }

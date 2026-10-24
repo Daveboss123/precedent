@@ -26,6 +26,16 @@ export function createStore(
   const key = process.env.MEMWAL_KEY;
   const accountId = process.env.MEMWAL_ACCOUNT_ID;
 
+  // The public demo must be resettable. Mainnet is append-only, so a single
+  // explicit flag is the only way to opt out of it without hiding credentials.
+  if (process.env.PRECEDENT_MODE === 'local') {
+    return {
+      store: new LocalStore(resolve('.data', `memories-${namespace}.json`)),
+      mode: 'local',
+      namespace,
+    };
+  }
+
   if (key && accountId) {
     return {
       store: new MemWalStore({

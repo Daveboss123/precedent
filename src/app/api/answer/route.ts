@@ -2,10 +2,9 @@ import { NextResponse } from 'next/server';
 
 import type { Action, Condition } from '../../../core/types.ts';
 import { readCharter } from '../../../lib/charter.ts';
-import { DEMO_CANDIDATES } from '../../../lib/demo.ts';
 import { jsonError } from '../../../lib/http.ts';
 import { getRuntime } from '../../../lib/runtime.ts';
-import { buildState } from '../../../lib/state.ts';
+import { buildState, candidateById, invalidateState } from '../../../lib/state.ts';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,14 +22,17 @@ export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as Body | null;
   if (!body) return jsonError('Expected a JSON body.');
 
-  const candidate = DEMO_CANDIDATES.find((item) => item.id === body.candidateId);
-  if (!candidate) return jsonError('Unknown candidate.');
+  const match = body.candidateId
+    ? await candidateById(body.candidateId)
+    : null;
+  if (!match) return jsonError('Unknown candidate.');
+  const { candidate } = match;
 
   const action = body.action as Action | undefined;
   if (!action || !ACTIONS.includes(action)) return jsonError('Unknown action.');
 
   const reason = (body.reason ?? '').trim();
-  if (!reason) return jsonError('A reason is required — it becomes the precedent.');
+  if (!reason) return jsonError('A reason is required — it becomes the rule.');
 
   const scope = (body.scope ?? '')
     .split(',')
@@ -70,5 +72,6 @@ export async function POST(request: Request) {
     cited: decision.cited,
   });
 
+  invalidateState();
   return NextResponse.json(await buildState());
 }
