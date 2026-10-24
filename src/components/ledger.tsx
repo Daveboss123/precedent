@@ -9,6 +9,7 @@ import { CharterPanel } from './charter-panel.tsx';
 import { DecisionCard } from './decision-card.tsx';
 import type { AnswerInput } from './decision-card.tsx';
 import { MemoryDrawer } from './memory-drawer.tsx';
+import { TatumBadge } from './tatum-badge.tsx';
 import { Timeline } from './timeline.tsx';
 
 export function Ledger() {
@@ -104,6 +105,7 @@ export function Ledger() {
           {state.mode === 'mainnet' ? 'MAINNET' : 'LOCAL DEMO'}
         </span>
         <span className="namespace">ns:{state.namespace}</span>
+        <TatumBadge />
 
         <div className="topbar-actions">
           <button

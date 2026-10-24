@@ -28,7 +28,12 @@ export function createStore(
 
   if (key && accountId) {
     return {
-      store: new MemWalStore({ key, accountId, namespace }),
+      store: new MemWalStore({
+        key,
+        accountId,
+        namespace,
+        serverUrl: process.env.MEMWAL_SERVER_URL,
+      }),
       mode: 'mainnet',
       namespace,
     };

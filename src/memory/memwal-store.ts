@@ -42,6 +42,7 @@ function asArray(value: unknown): unknown[] {
     const record = value as Record<string, unknown>;
     if (Array.isArray(record.results)) return record.results;
     if (Array.isArray(record.memories)) return record.memories;
+    if (Array.isArray(record.facts)) return record.facts;
     if (Array.isArray(record.data)) return record.data;
   }
   return [];
