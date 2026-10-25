@@ -282,7 +282,6 @@ export function Landing() {
           data-reveal
         >
           <div className="lp-chapter-copy">
-            <p className="lp-kicker">When it’s wrong</p>
             <h2>
               You correct it once.
               <br />
@@ -315,7 +314,7 @@ export function Landing() {
             <div className="lp-story-photo">
               <Image
                 src="/products/coffee-bag.jpg"
-                alt="Coffee beans on a counter"
+                alt="A bag of Roaster A coffee"
                 fill
                 sizes="(max-width: 820px) 90vw, 40vw"
               />
@@ -447,36 +446,42 @@ export function Landing() {
           </div>
 
           <div className="lp-questions-copy">
-            <p className="lp-kicker">Before you start</p>
             <h2>A few things worth knowing.</h2>
 
-            <dl className="lp-faq">
-              <div className="lp-faq-item">
-                <dt>Do I have to set up rules first?</dt>
-                <dd>
+            <div className="lp-faq">
+              <details className="lp-faq-item" name="precedent-faq" open>
+                <summary>
+                  <span>Do I have to set up rules first?</span>
+                  <span className="lp-faq-toggle" aria-hidden="true" />
+                </summary>
+                <p className="lp-faq-answer">
                   No. Add the things you buy. Precedent asks only where it
                   doesn’t know your rule yet.
-                </dd>
-              </div>
-              <div className="lp-faq-item">
-                <dt>What happens when it gets it wrong?</dt>
-                <dd>
+                </p>
+              </details>
+
+              <details className="lp-faq-item" name="precedent-faq">
+                <summary>
+                  <span>What happens when it gets it wrong?</span>
+                  <span className="lp-faq-toggle" aria-hidden="true" />
+                </summary>
+                <p className="lp-faq-answer">
                   Tell it what happened. The old rule stays on the record; the
                   new one takes over.
-                </dd>
-              </div>
-              <div className="lp-faq-item">
-                <dt>Can it spend without asking?</dt>
-                <dd>
+                </p>
+              </details>
+
+              <details className="lp-faq-item" name="precedent-faq">
+                <summary>
+                  <span>Can it spend without asking?</span>
+                  <span className="lp-faq-toggle" aria-hidden="true" />
+                </summary>
+                <p className="lp-faq-answer">
                   Only inside your limits. A monthly ceiling, an ask-above
                   amount, and hard no’s are checked first.
-                </dd>
-              </div>
-            </dl>
-
-            <p className="lp-questions-note">
-              No sign-up. Reset the demo whenever you like.
-            </p>
+                </p>
+              </details>
+            </div>
           </div>
         </section>
       </main>

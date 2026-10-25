@@ -1229,30 +1229,98 @@ button:hover > .lp-arrow {
 }
 
 .lp-faq-item {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 28px;
-  padding: 18px 0;
   border-bottom: 1px solid var(--rule);
 }
 
-.lp-faq-item dt {
-  font-size: 14px;
+.lp-faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 0;
+  font-size: 14.5px;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.012em;
+  cursor: pointer;
+  list-style: none;
+  transition: color 150ms ease;
 }
 
-.lp-faq-item dd {
+.lp-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.lp-faq-item summary:hover {
+  color: var(--accent);
+}
+
+.lp-faq-toggle {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 50%;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 200ms ease;
+}
+
+.lp-faq-toggle::before,
+.lp-faq-toggle::after {
+  position: absolute;
+  background: currentColor;
+  content: "";
+}
+
+.lp-faq-toggle::before {
+  width: 9px;
+  height: 1px;
+}
+
+.lp-faq-toggle::after {
+  width: 1px;
+  height: 9px;
+  transition: opacity 160ms ease;
+}
+
+.lp-faq-item[open] summary {
+  color: var(--ink);
+}
+
+.lp-faq-item[open] .lp-faq-toggle {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  transform: rotate(45deg);
+}
+
+.lp-faq-item[open] .lp-faq-toggle::after {
+  opacity: 0;
+}
+
+.lp-faq-answer {
+  max-width: 560px;
+  padding: 0 48px 20px 0;
   color: var(--muted);
   font-size: 13.5px;
-  line-height: 1.6;
+  line-height: 1.65;
+  animation: faq-open 220ms ease both;
 }
 
-.lp-questions-note {
-  margin-top: 18px;
-  color: var(--faint);
-  font-size: 11px;
-  letter-spacing: 0.01em;
+@keyframes faq-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ---------- footer ---------- */
@@ -2026,6 +2094,7 @@ button:hover > .lp-arrow {
 .today-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
   border: 1px solid var(--rule);
   border-radius: 15px;
   background: var(--card);
@@ -2084,6 +2153,30 @@ button:hover > .lp-arrow {
   font-size: 10.5px;
 }
 
+.today-meter {
+  display: flex;
+  grid-column: 1 / -1;
+  height: 4px;
+  background: var(--paper-3);
+}
+
+.today-meter-seg {
+  display: block;
+  height: 100%;
+}
+
+.today-meter-seg--auto {
+  background: var(--forest);
+}
+
+.today-meter-seg--ask {
+  background: var(--amber);
+}
+
+.today-meter-seg--block {
+  background: var(--accent);
+}
+
 /* ---------- panels ---------- */
 
 .panel {
@@ -2130,50 +2223,162 @@ button:hover > .lp-arrow {
   margin-top: 14px;
 }
 
-.autonomy-grid {
+.autonomy-body {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  padding-top: 18px;
+  grid-template-columns: 212px minmax(0, 1fr);
+  gap: 44px;
+  padding-top: 24px;
 }
 
-.phase-top {
+.autonomy-summary {
+  display: flex;
+  flex-direction: column;
+  padding-right: 30px;
+  border-right: 1px solid var(--rule);
+}
+
+.autonomy-summary b {
+  font-size: clamp(58px, 6vw, 78px);
+  font-weight: 500;
+  line-height: 0.86;
+  letter-spacing: -0.07em;
+}
+
+.autonomy-summary > span {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.autonomy-summary small {
+  margin-top: 12px;
+  color: var(--forest);
+  font-size: 10px;
+  letter-spacing: 0.01em;
+}
+
+.autonomy-summary small.is-down {
+  color: var(--accent);
+}
+
+.autonomy-chart {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.autonomy-scale {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.02em;
+}
+
+.autonomy-row-top {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
   gap: 10px;
-  font-size: 11.5px;
+  margin-bottom: 8px;
 }
 
-.phase-top span {
-  color: var(--muted);
-}
-
-.phase-top b {
-  font-size: 15px;
+.autonomy-row-top span {
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
-.bar {
-  height: 4px;
-  margin-top: 8px;
-  border-radius: 99px;
-  background: var(--paper-3);
+.autonomy-row-top small {
+  color: var(--faint);
+  font-size: 10px;
+}
+
+.autonomy-row-top b {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.autonomy-bar {
+  position: relative;
+  display: flex;
+  height: 13px;
   overflow: hidden;
+  background: var(--paper-3);
 }
 
-.bar span {
+.autonomy-bar::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 calc(25% - 1px),
+    rgba(25, 21, 16, 0.16) calc(25% - 1px) 25%
+  );
+  content: "";
+}
+
+.autonomy-seg {
   display: block;
   height: 100%;
-  border-radius: inherit;
+}
+
+.autonomy-seg--acted {
   background: var(--forest);
 }
 
-.phase p {
+.autonomy-seg--asked {
+  background: var(--amber);
+}
+
+.autonomy-seg--blocked {
+  background: var(--accent);
+}
+
+.autonomy-row-foot {
   margin-top: 7px;
   color: var(--faint);
   font-size: 10px;
+}
+
+.autonomy-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  color: var(--faint);
+  font-size: 10px;
+}
+
+.autonomy-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.autonomy-swatch {
+  width: 8px;
+  height: 8px;
+}
+
+.autonomy-swatch--acted {
+  background: var(--forest);
+}
+
+.autonomy-swatch--asked {
+  background: var(--amber);
+}
+
+.autonomy-swatch--blocked {
+  background: var(--accent);
 }
 
 /* ---------- queue ---------- */
@@ -3478,6 +3683,16 @@ button:hover > .lp-arrow {
 
 /* ---------- correction story ---------- */
 
+.lp-remembers {
+  align-items: start;
+}
+
+.lp-remembers h2 {
+  max-width: 590px;
+  margin-top: 0;
+  font-size: clamp(42px, 4.8vw, 58px);
+}
+
 .lp-chapter--reverse .lp-chapter-copy {
   order: 2;
 }
@@ -3537,6 +3752,7 @@ button:hover > .lp-arrow {
 }
 
 .lp-story-item {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 14px;
@@ -3544,6 +3760,16 @@ button:hover > .lp-arrow {
   border: 1px solid var(--rule);
   border-radius: 12px;
   background: var(--card);
+}
+
+.lp-story-item + .lp-story-item::before {
+  position: absolute;
+  top: -11px;
+  left: 30px;
+  width: 1px;
+  height: 11px;
+  background: var(--rule-strong);
+  content: "";
 }
 
 .lp-story-item > span {
@@ -3689,6 +3915,16 @@ button:hover > .lp-arrow {
 .lp-receipt-foot b {
   color: var(--accent);
   font-weight: 550;
+}
+
+.lp-receipt-section .lp-chapter-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.lp-receipt-section .lp-chapter-copy .lp-btn {
+  margin-top: 44px;
 }
 
 /* ---------- under the hood ---------- */
@@ -4267,6 +4503,17 @@ button:hover > .lp-arrow {
   color: var(--accent);
 }
 
+/* ---------- numeric alignment ---------- */
+
+.today-stat b,
+.decision-price,
+.lp-bitem-price,
+.lp-lrow-right b,
+.lp-rrow b,
+.list-row-side > b {
+  font-variant-numeric: tabular-nums;
+}
+
 /* ==========================================================================
    Responsive
    ========================================================================== */
@@ -4423,9 +4670,15 @@ button:hover > .lp-arrow {
     margin: 0 auto;
   }
 
-  .lp-faq-item {
-    grid-template-columns: 1fr;
-    gap: 6px;
+  .lp-faq-item summary {
+    gap: 16px;
+    padding: 16px 0;
+    font-size: 14px;
+  }
+
+  .lp-faq-answer {
+    padding: 0 36px 16px 0;
+    font-size: 13px;
   }
 
   .lp-proof-link {
@@ -4637,8 +4890,8 @@ button:hover > .lp-arrow {
     margin-top: 28px;
   }
 
-  .lp-faq-item {
-    padding: 16px 0;
+  .lp-faq-answer {
+    padding-right: 30px;
   }
 
   .lp-footer {
@@ -4681,9 +4934,19 @@ button:hover > .lp-arrow {
     border-top: 0;
   }
 
-  .autonomy-grid {
+  .autonomy-body {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 24px;
+  }
+
+  .autonomy-summary {
+    padding: 0 0 20px;
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .autonomy-summary b {
+    font-size: 56px;
   }
 
   .decision {

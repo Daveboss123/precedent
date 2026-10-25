@@ -207,6 +207,9 @@ export function Ledger() {
   const auto = state.queue.filter((item) => item.decision.action === 'act').length;
   const ask = state.queue.filter((item) => item.decision.action === 'ask').length;
   const blocked = state.queue.filter((item) => item.decision.action === 'block').length;
+  const queueTotal = state.queue.length;
+  const meterWidth = (count: number) =>
+    queueTotal === 0 ? '0%' : `${(count / queueTotal) * 100}%`;
   const covered = state.items.filter((item) => item.decision.action === 'act').length;
 
   const filteredQueue = state.queue.filter((item) => {
@@ -341,6 +344,24 @@ export function Ledger() {
               <div className="today-stat">
                 <b>{active}</b>
                 <span>Rules</span>
+              </div>
+              <div
+                className="today-meter"
+                role="img"
+                aria-label={`${auto} handled, ${ask} need you, ${blocked} blocked`}
+              >
+                <span
+                  className="today-meter-seg today-meter-seg--auto"
+                  style={{ width: meterWidth(auto) }}
+                />
+                <span
+                  className="today-meter-seg today-meter-seg--ask"
+                  style={{ width: meterWidth(ask) }}
+                />
+                <span
+                  className="today-meter-seg today-meter-seg--block"
+                  style={{ width: meterWidth(blocked) }}
+                />
               </div>
             </section>
 
