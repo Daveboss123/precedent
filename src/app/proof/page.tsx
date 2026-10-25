@@ -1,7 +1,7 @@
 import { ProofCheck } from '../../components/proof-check.tsx';
 
 export const metadata = {
-  title: 'The record · Precedent',
+  title: 'The record',
   description:
     'The append-only Walrus Memory record behind Precedent, verified through Tatum’s Sui GraphQL gateway.',
 };
@@ -53,7 +53,7 @@ export default function ProofPage() {
             <b>20</b>
           </div>
           <div>
-            <span>Checkpoint</span>
+            <span>First verified</span>
             <b className="proof-mono">#{CHECKPOINT}</b>
           </div>
           <div className="proof-grid-wide">

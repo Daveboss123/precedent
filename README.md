@@ -6,8 +6,8 @@ Precedent is a household replenishment agent whose memory is its case law. It le
 
 Built for **Tatum × Walrus — Total Recall, Track 2**.
 
-- **Live app:** https://precedent-demo.vercel.app
-- **The record:** https://precedent-demo.vercel.app/proof
+- **Live app:** https://precedent-demo-bice.vercel.app
+- **The record:** https://precedent-demo-bice.vercel.app/proof
 - **Source:** https://github.com/Daveboss123/precedent
 
 ## The idea
@@ -42,9 +42,9 @@ The public demo is intentionally **not** pointed at that mainnet namespace. A vi
 
 `/proof` verifies the mainnet record live through Tatum’s Sui GraphQL gateway:
 
-- the MemWal account exists,
+- the MemWal account exists and is active,
 - the delegate key is registered,
-- the pinned memory write is present.
+- optionally, a pinned memory write when `TATUM_VERIFY_DIGEST` or `TATUM_VERIFY_OBJECT_ID` is set.
 
 Tatum retired Sui JSON-RPC, so the client talks to `https://sui-mainnet.gateway.tatum.io/graphql`. The verification result is cached for 60 seconds and shared between concurrent requests to stay inside the free plan’s rate limit.
 
@@ -87,7 +87,7 @@ The demo still needs the public `MEMWAL_ACCOUNT_ID`, `MEMWAL_AGENT_ID`, and `TAT
 npm run smoke:verify
 ```
 
-This re-reads the pinned write and the account through Tatum. The script exits non-zero if the record cannot be verified.
+This re-reads the account and delegate through Tatum, plus the pinned write when configured. The script exits non-zero if the record cannot be verified.
 
 ## Tests
 
