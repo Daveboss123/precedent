@@ -51,7 +51,14 @@ export async function POST(request: Request) {
     increase === null ? null : { priceIncreaseAtLeast: increase / 100 };
 
   const rt = getRuntime();
-  await rt.repo.create({
+  const charter = await readCharter();
+
+  // What the agent believed *before* this answer. If the user is settling a
+  // conflict, the answer is a ruling: the precedents on the losing side are
+  // overruled, not left to contradict the new rule forever.
+  const before = await rt.repo.resolveCandidate(candidate, charter);
+
+  const created = await rt.repo.create({
     domain: candidate.domain,
     action,
     trigger: increase === null ? 'stated rule' : `price increase above ${increase}%`,
@@ -61,9 +68,13 @@ export async function POST(request: Request) {
     confidence: 0.9,
   });
 
+  if (before.cause === 'precedent_conflict') {
+    await rt.repo.overrule(before.cited, created.id, reason);
+  }
+
   await rt.repo.audit();
 
-  const decision = await rt.repo.resolveCandidate(candidate, await readCharter());
+  const decision = await rt.repo.resolveCandidate(candidate, charter);
   await rt.log.append({
     phase: 'Interactive',
     candidate,

@@ -190,6 +190,35 @@ test('resolving a contradiction retires its finding', async () => {
   assert.deepEqual(await repo.audit(), []);
 });
 
+test('answering a conflict overrules the losing side and settles it', async () => {
+  const { repo } = makeRepo();
+  await repo.create(beans);
+  await repo.create({ ...beans, action: 'buy', reason: 'keep the house blend' });
+
+  const before = await repo.resolveCandidate(coffee, charter);
+  assert.equal(before.cause, 'precedent_conflict');
+  assert.deepEqual(before.cited, [1, 2]);
+  await repo.audit();
+  assert.equal((await repo.findings()).length, 1);
+
+  const ruling = await repo.create({
+    ...beans,
+    action: 'buy',
+    reason: 'the house blend wins',
+  });
+  const overruled = await repo.overrule(before.cited, ruling.id, ruling.reason);
+  assert.deepEqual(overruled.map((record) => record.oldId), [1]);
+
+  const after = await repo.resolveCandidate(coffee, charter);
+  assert.equal(after.action, 'act');
+  assert.equal(after.cause, 'precedent_match');
+  assert.deepEqual([...after.cited].sort((a, b) => a - b), [2, 3]);
+
+  const snapshot = await repo.snapshot();
+  assert.equal(snapshot.precedents.find((item) => item.id === 1)?.supersededBy, 3);
+  assert.deepEqual(await repo.findings(), []);
+});
+
 test('outcomes are recorded as memories', async () => {
   const { repo, store } = makeRepo();
 

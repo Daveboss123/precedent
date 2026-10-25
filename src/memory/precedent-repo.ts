@@ -220,6 +220,50 @@ export class PrecedentRepo {
     return { precedent, record };
   }
 
+  /**
+   * Settle a conflict with a precedent that already exists.
+   *
+   * `supersede` writes a replacement because the old rule's content changes.
+   * A conflict ruling is different: the user just answered the question, so
+   * the new rule is already on the ledger. Only the SUPERSEDES records need
+   * to be appended. The losing rules stay in history; they simply stop
+   * binding.
+   */
+  async overrule(
+    oldIds: number[],
+    newId: number,
+    reason: string,
+  ): Promise<SupersessionRecord[]> {
+    const active = await this.activePrecedents();
+    const byId = new Map(active.map((precedent) => [precedent.id, precedent]));
+    const winner = byId.get(newId);
+
+    if (!winner) {
+      throw new Error(
+        `Cannot overrule with #${newId}: no active precedent with that id.`,
+      );
+    }
+
+    const records: SupersessionRecord[] = [];
+    for (const oldId of new Set(oldIds)) {
+      const old = byId.get(oldId);
+      // Only the losing side is overruled. Rules that already agree with the
+      // ruling stay active as supporting authority.
+      if (!old || oldId === newId || old.action === winner.action) continue;
+
+      const record: SupersessionRecord = {
+        oldId,
+        newId,
+        reason,
+        createdAt: this.now().toISOString(),
+      };
+      await this.write(serializeSupersession(record));
+      records.push(record);
+    }
+
+    return records;
+  }
+
   async recordOutcome(outcome: Outcome): Promise<void> {
     await this.write(serializeOutcome(outcome, this.now().toISOString()));
   }
