@@ -8,8 +8,10 @@
 
 import { resolve } from 'node:path';
 
+import { redisConfigured } from '../lib/redis.ts';
 import { LocalStore } from './local-store.ts';
 import { MemWalStore } from './memwal-store.ts';
+import { RedisStore } from './redis-store.ts';
 import type { MemoryStore } from './store.ts';
 
 export type StoreMode = 'mainnet' | 'local';
@@ -30,7 +32,9 @@ export function createStore(
   // explicit flag is the only way to opt out of it without hiding credentials.
   if (process.env.PRECEDENT_MODE === 'local') {
     return {
-      store: new LocalStore(resolve('.data', `memories-${namespace}.json`)),
+      store: redisConfigured()
+        ? new RedisStore()
+        : new LocalStore(resolve('.data', `memories-${namespace}.json`)),
       mode: 'local',
       namespace,
     };

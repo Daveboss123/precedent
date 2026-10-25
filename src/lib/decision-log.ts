@@ -42,6 +42,13 @@ export interface AutonomyReport {
   phases: PhaseReport[];
 }
 
+export interface DecisionLogLike {
+  all(): Promise<DecisionEntry[]>;
+  append(entry: Omit<DecisionEntry, 'id' | 'at'>): Promise<DecisionEntry>;
+  report(): Promise<AutonomyReport>;
+  clear(): Promise<void>;
+}
+
 function summarise(entries: DecisionEntry[]): Omit<PhaseReport, 'phase'> {
   const acted = entries.filter((entry) => entry.action === 'act').length;
   const asked = entries.filter((entry) => entry.action === 'ask').length;
@@ -57,7 +64,25 @@ function summarise(entries: DecisionEntry[]): Omit<PhaseReport, 'phase'> {
   };
 }
 
-export class DecisionLog {
+export function reportOf(decisions: DecisionEntry[]): AutonomyReport {
+  const overall = summarise(decisions);
+  const groups = new Map<string, DecisionEntry[]>();
+
+  for (const decision of decisions) {
+    const group = groups.get(decision.phase) ?? [];
+    group.push(decision);
+    groups.set(decision.phase, group);
+  }
+
+  const phases = [...groups.entries()].map(([phase, entries]) => ({
+    phase,
+    ...summarise(entries),
+  }));
+
+  return { ...overall, phases };
+}
+
+export class DecisionLog implements DecisionLogLike {
   path: string;
   queue: Promise<unknown>;
 
@@ -97,22 +122,7 @@ export class DecisionLog {
   }
 
   async report(): Promise<AutonomyReport> {
-    const decisions = await this.all();
-    const overall = summarise(decisions);
-
-    const groups = new Map<string, DecisionEntry[]>();
-    for (const decision of decisions) {
-      const group = groups.get(decision.phase) ?? [];
-      group.push(decision);
-      groups.set(decision.phase, group);
-    }
-
-    const phases = [...groups.entries()].map(([phase, entries]) => ({
-      phase,
-      ...summarise(entries),
-    }));
-
-    return { ...overall, phases };
+    return reportOf(await this.all());
   }
 
   async clear(): Promise<void> {

@@ -20,6 +20,8 @@ export interface IdAllocator {
   next(): Promise<number>;
   /** Raise the watermark so an id already in memory is never reissued. */
   observe(id: number): Promise<void>;
+  /** Reset to 1. Only safe after the ledger it numbered has been cleared. */
+  reset?(): Promise<void>;
 }
 
 interface IdState {

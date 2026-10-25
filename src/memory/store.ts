@@ -35,5 +35,7 @@ export interface MemoryStore {
    * Optional: a remote store may not support exhaustive listing.
    */
   list?(): Promise<string[]>;
+  /** Only resettable demo stores implement this. Mainnet is append-only. */
+  clear?(): Promise<void>;
   health(): Promise<boolean>;
 }
