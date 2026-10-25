@@ -6,8 +6,8 @@ Precedent is a household replenishment agent whose memory is its case law. It le
 
 Built for **Tatum × Walrus — Total Recall, Track 2**.
 
-- **Live app:** https://precedent-demo-bice.vercel.app
-- **The record:** https://precedent-demo-bice.vercel.app/proof
+- **Live app:** https://precedent-household.vercel.app
+- **The record:** https://precedent-household.vercel.app/proof
 - **Source:** https://github.com/Daveboss123/precedent
 
 ## The idea

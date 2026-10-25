@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The memory is the case law · Precedent</title>
+    <meta
+      name="description"
+      content="Why a household replenishment agent should remember like a court, not a settings file."
+    />
+    <meta property="og:title" content="The memory is the case law" />
+    <meta
+      property="og:description"
+      content="Building Precedent for Tatum × Walrus Total Recall, Track 2."
+    />
+    <meta property="og:type" content="article" />
+    <link rel="stylesheet" href="./blog.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <a class="brand" href="https://precedent-household.vercel.app/">
+          Precedent<span>§</span>
+        </a>
+        <a class="top-link" href="https://precedent-household.vercel.app/ledger">
+          Open the demo →
+        </a>
+      </header>
+
+      <article class="article">
+        <p class="kicker">Total Recall · Track 2</p>
+        <h1>The memory is the case law.</h1>
+        <p class="lede">
+          A household agent should remember why it was wrong, not just what it
+          prefers. Precedent is my attempt to build one.
+        </p>
+        <div class="byline">
+          <span><b>David</b> · builder</span>
+          <span>25 October 2026</span>
+          <span>6 min read</span>
+        </div>
+
+        <div class="article-body">
+          <h2>The weekly shop is a memory problem</h2>
+          <p>
+            Every household has a list of things it buys again and again. Coffee,
+            oat milk, filters, dish soap, the cleaning tablets that keep the
+            grinder from tasting like last month’s roast. The list is boring.
+            The arguments around it are not.
+          </p>
+          <p>
+            <em>Pay the extra dollar for the good oat milk. Don’t buy the
+            store-brand beans; they taste thin. If the coffee jumps more than
+            15%, switch. Don’t touch the subscription.</em>
+          </p>
+          <p>
+            Those are not preferences in a profile. They are small rules, with
+            conditions, exceptions, and a history. They are the kind of thing a
+            person learns by being wrong once and then correcting the mistake.
+            Most “AI shopping” products ask you to configure this knowledge up
+            front. That is backwards. You already have the rules. You just don’t
+            have a way to hand them over.
+          </p>
+
+          <h2>A preference is not a rule</h2>
+          <p>
+            The first version of Precedent looked like every other agent: a chat
+            box and a vector store. You could tell it things and it would try to
+            recall them. It was easy to demo and impossible to trust. A list of
+            remembered sentences cannot tell you which one is current, which one
+            is an exception, or what happens when two of them disagree.
+          </p>
+          <p>
+            So I rebuilt the memory around a different primitive: the
+            <strong>precedent</strong>. A precedent is a rule with an action, a
+            scope, an optional condition, and the words the user actually used.
+            It is written to memory, numbered, and cited before the next spend.
+            It can be overruled, but it cannot be silently overwritten.
+          </p>
+
+          <ul class="cards">
+            <li>
+              <b>Write it</b>
+              <span>“The cheaper beans tasted thin. Stay with Roaster A.”</span>
+            </li>
+            <li>
+              <b>Cite it</b>
+              <span>“House blend beans — $18.00. Cited #7.”</span>
+            </li>
+            <li>
+              <b>Overrule it</b>
+              <span>The old rule stays. A new one takes authority.</span>
+            </li>
+          </ul>
+
+          <h2>The conflict is the feature</h2>
+          <p>
+            A normal recommender hides its uncertainty in a score. Precedent has
+            to show it. When two live rules cover the same thing and disagree,
+            the agent does not average them. It stops, names both, and asks the
+            household to rule.
+          </p>
+          <p>
+            The demo starts with exactly that situation. One rule says house
+            blend beans are the standard. A later rule says that above a 15%
+            price jump, switch to the cheaper roaster. Both are still live. Both
+            cite the same bag of coffee. The agent asks.
+          </p>
+          <p>
+            When the user answers, the losing side is not deleted. It is
+            <strong>overruled</strong>: a supersession record names the new rule
+            that governs, the old rule stays readable, and the conflict
+            disappears from the audit because it has been settled. That is the
+            whole product in one interaction. Memory is not a pile of text. It
+            is a record of what still has authority.
+          </p>
+
+          <blockquote>
+            <p>
+              The useful question is not “what does this user like?” It is “what
+              did we decide, and why does it still apply?”
+            </p>
+          </blockquote>
+
+          <h2>What is actually on the record</h2>
+          <p>
+            The mainnet submission is 20 memories in the <span class="mono">precedent</span>
+            namespace on Sui mainnet, written through Walrus Memory. They are
+            not a transcript. They are the rules, the correction, the outcome,
+            the observation behind the correction, and the audit finding that
+            made the conflict visible.
+          </p>
+
+          <table class="record">
+            <tr>
+              <th>Network</th>
+              <td>Sui mainnet</td>
+            </tr>
+            <tr>
+              <th>Memories</th>
+              <td>20</td>
+            </tr>
+            <tr>
+              <th>Namespace</th>
+              <td class="mono">precedent</td>
+            </tr>
+            <tr>
+              <th>MemWal account</th>
+              <td class="mono">
+                0x9ed016de2fbfa51d73363495e7158e40f8761a0c253c9198c430423d624f6d55
+              </td>
+            </tr>
+            <tr>
+              <th>Delegate</th>
+              <td class="mono">
+                43d54a89a0aadd1a1ef32233c86e14347a87afc1b109ff0cbacc700ca9c276ca
+              </td>
+            </tr>
+          </table>
+
+          <p>
+            The public demo is deliberately pointed at a separate, resettable
+            store. Walrus Memory is append-only, and a visitor should be able to
+            replay the story without appending to the record I submitted. The
+            app labels itself <strong>Demo</strong> for that reason. The proof
+            page is the bridge between the two: it checks the mainnet account
+            and delegate live, so the record is never just a screenshot.
+          </p>
+
+          <figure>
+            <img
+              src="./assets/proof.png"
+              alt="The Precedent proof page, showing a live Tatum verification of the Walrus Memory account."
+            />
+            <figcaption>
+              The proof page verifies the MemWal account and delegate through
+              Tatum’s Sui GraphQL gateway. The checkpoint moves; the account does
+              not.
+            </figcaption>
+          </figure>
+
+          <h2>Why Walrus, why Tatum</h2>
+          <p>
+            The point of putting case law on Walrus is not that a JSON file is
+            hard to store. It is that the record should outlive the app, the
+            model, and the prompt. A rule that was cited before a purchase, and
+            then overruled by the person who owns the money, is exactly the kind
+            of thing that should be append-only and independently readable.
+          </p>
+          <p>
+            Tatum’s Sui GraphQL gateway is the witness. The proof page asks the
+            chain whether the MemWal account is active and whether the configured
+            delegate key is registered. It does not trust the app’s own database
+            for that answer. The check is cached for a minute and shared between
+            concurrent requests, because the free plan is three requests a second
+            and a demo should not trip its own rate limit.
+          </p>
+
+          <div class="callout">
+            <b>One honest limitation</b>
+            Walrus can prove that a memory exists and who wrote it. It cannot
+            prove that the sentence inside is true. Precedent treats memory as
+            authority, not truth: the household’s ruling is what gives a rule
+            force, and the record shows when that ruling changed.
+          </div>
+
+          <h2>What the demo shows</h2>
+          <p>
+            The app is a normal reorder dashboard, not a chat window. This week’s
+            basket is already sorted into handled, needs you, and blocked. The
+            rules are visible. The audit is visible. The memory drawer shows the
+            exact lines that were written, including the supersession record.
+          </p>
+
+          <figure>
+            <img
+              src="./assets/ledger.png"
+              alt="The Precedent ledger, showing this week’s basket, the conflict that needs an answer, and the autonomy chart."
+            />
+            <figcaption>
+              The seeded story: eight items, five handled, two questions, one
+              hard block. The coffee conflict is the one worth settling.
+            </figcaption>
+          </figure>
+
+          <p>
+            If you only have two minutes: open the ledger, answer the coffee
+            question, and watch the audit clear. Then open the proof page and
+            press “Check again.” That is the loop the whole product is built
+            around: a rule is cited, a person rules, the record keeps both.
+          </p>
+
+          <h2>What I would build next</h2>
+          <p>
+            The obvious next step is outcomes. A rule should get stronger when
+            the household actually likes the result, and weaker when it returns
+            the bag. That is already sketched in the memory format; it needs a
+            real order feed behind it. After that: shared households, where two
+            people can hold different rules and the agent has to ask who has
+            authority, and a notification path for the questions that should not
+            wait for someone to open a dashboard.
+          </p>
+          <p>
+            But the core idea is finished enough to show. A household agent
+            should not be a profile with a chat box. It should keep a record of
+            its own reasoning, cite it before it acts, and let the people who
+            live with the consequences overrule it without erasing the past.
+          </p>
+
+          <div class="end">
+            <p><strong>Precedent</strong> was built for Tatum × Walrus — Total Recall, Track 2.</p>
+            <div class="end-links">
+              <a href="https://precedent-household.vercel.app/">Live demo</a>
+              <a href="https://precedent-household.vercel.app/proof">The record</a>
+              <a href="https://github.com/Daveboss123/precedent">Source</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <footer class="foot">
+        Built for Tatum × Walrus · Track 2. The public demo is a resettable
+        store; the mainnet record is append-only.
+      </footer>
+    </div>
+  </body>
+</html>
