@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import '@fontsource-variable/inter';
+import '@fontsource-variable/newsreader';
+import '@fontsource-variable/newsreader/wght-italic.css';
 
 import './globals.css';
+import './site.css';
 
 export const metadata: Metadata = {
   title: {
