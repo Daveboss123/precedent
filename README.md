@@ -114,3 +114,11 @@ tests/             resolver, supersession, audit, repository, Tatum
 - Mainnet is append-only in the product. The UI refuses to delete a Walrus memory.
 - The editable list and the decision log are separate from memory on purpose.
 - The public demo is a separate store because a visitor cannot be allowed to append to the submission record.
+
+## Credits
+
+Product and editorial photography comes from free stock libraries:
+
+- **Unsplash:** coffee bag, oat milk, paper filters, espresso pods, dish soap, coffee table, kitchen pantry.
+- **Pexels:** olive oil (#16486887), paper towels (#3941873), grocery bag (#8900041).
+- **Pixabay:** dishwasher tablets.

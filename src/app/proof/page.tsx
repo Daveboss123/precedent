@@ -1,4 +1,5 @@
 import { ProofCheck } from '../../components/proof-check.tsx';
+import { Wordmark } from '../../components/wordmark.tsx';
 
 export const metadata = {
   title: 'The record',
@@ -21,7 +22,7 @@ export default function ProofPage() {
 
       <header className="pf-nav">
         <a className="pf-brand" href="/" aria-label="Precedent home">
-          Precedent<span>§</span>
+          <Wordmark />
         </a>
 
         <nav className="pf-nav-links" aria-label="Proof page">
@@ -350,7 +351,7 @@ export default function ProofPage() {
           <div className="pf-footer-main">
             <div className="pf-footer-brand">
               <a className="pf-footer-wordmark" href="/">
-                Precedent<span>§</span>
+                <Wordmark />
               </a>
               <p>The weekly shop, handled.</p>
               <span>Proof, not decoration.</span>

@@ -11,6 +11,7 @@ import { DecisionCard } from './decision-card.tsx';
 import type { AnswerInput } from './decision-card.tsx';
 import { MemoryDrawer } from './memory-drawer.tsx';
 import { Timeline } from './timeline.tsx';
+import { Wordmark } from './wordmark.tsx';
 import { YourList } from './your-list.tsx';
 
 type View = 'today' | 'list' | 'memory' | 'auditor' | 'limits';
@@ -165,12 +166,8 @@ export function Ledger() {
     return (
       <div className="loading">
         <div className="loading-lockup">
-          <span className="loading-mark" aria-hidden="true">
-            <span className="loading-ring" />
-            <span className="loading-dot" />
-          </span>
           <span className="loading-brand">
-            Precedent<span>§</span>
+            <Wordmark />
           </span>
         </div>
         <span className="loading-bar" aria-hidden="true">
@@ -185,7 +182,7 @@ export function Ledger() {
     return (
       <div className="error-state">
         <div className="loading-brand">
-          Precedent<span>§</span>
+          <Wordmark />
         </div>
         <h1>Couldn’t load your basket.</h1>
         <p>Try again in a moment.</p>
@@ -236,7 +233,7 @@ export function Ledger() {
     <div className="app">
       <aside className="rail">
         <a className="rail-brand" href="/" aria-label="Precedent home">
-          Precedent<span>§</span>
+          <Wordmark />
         </a>
 
         <nav className="rail-nav" aria-label="Precedent sections">

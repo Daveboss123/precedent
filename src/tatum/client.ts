@@ -109,7 +109,7 @@ export class TatumClient {
     this.apiKey = config.apiKey;
     this.url = normalizeGraphqlUrl(config.url);
     this.fetchImpl = config.fetchImpl ?? fetch;
-    this.timeoutMs = config.timeoutMs ?? 10_000;
+    this.timeoutMs = config.timeoutMs ?? 20_000;
   }
 
   async graphql<T>(
