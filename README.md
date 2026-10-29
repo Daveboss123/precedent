@@ -10,6 +10,13 @@ Built for **Tatum × Walrus: Total Recall, Track 2**.
 - **The record:** https://precedent-household.vercel.app/proof
 - **Source:** https://github.com/Daveboss123/precedent
 
+## Demo films
+
+- **Full demo (2:28):** https://precedent-household.vercel.app/video/precedent-demo.mp4
+- **Short demo (0:55):** https://precedent-household.vercel.app/video/precedent-55s.mp4
+
+Both cuts are 1920×1080 at 30fps, with captions. They use recorded product footage and a saved Tatum proof result, not live calls during the render. The Remotion source and storyboard are in `video/`.
+
 ## The idea
 
 Most “AI shopping” demos ask you to configure preferences. Precedent starts with the list you already have and learns the way people actually do: by being wrong, and being told.

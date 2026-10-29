@@ -1,0 +1,83 @@
+1
+00:00:00,350 --> 00:00:04,100
+What if your AI remembered why it got something wrong?
+
+2
+00:00:04,100 --> 00:00:05,225
+Same shopping list.
+
+3
+00:00:05,225 --> 00:00:06,350
+Fewer repeated decisions.
+
+4
+00:00:07,350 --> 00:00:08,220
+Meet Precedent.
+
+5
+00:00:08,220 --> 00:00:09,959
+Your shopping rules, remembered.
+
+6
+00:00:09,959 --> 00:00:15,176
+It separates what is handled, what needs you, and what is blocked.
+
+7
+00:00:15,176 --> 00:00:17,350
+Every decision carries its rule.
+
+8
+00:00:18,350 --> 00:00:19,233
+Cheaper coffee.
+
+9
+00:00:19,233 --> 00:00:20,117
+Too acidic.
+
+10
+00:00:20,117 --> 00:00:22,767
+The correction becomes a new rule.
+
+11
+00:00:22,767 --> 00:00:28,068
+Pay the premium, keep the original record, and remember why next time.
+
+12
+00:00:29,350 --> 00:00:30,524
+Two rules disagree?
+
+13
+00:00:30,524 --> 00:00:32,089
+It pauses and asks.
+
+14
+00:00:32,089 --> 00:00:34,046
+One answer resolves the conflict.
+
+15
+00:00:34,046 --> 00:00:38,350
+The new rule governs; the old one stays on the record.
+
+16
+00:00:39,350 --> 00:00:40,816
+Walrus stores the history.
+
+17
+00:00:40,816 --> 00:00:43,382
+Tatum checks the mainnet account and delegate.
+
+18
+00:00:43,382 --> 00:00:47,048
+This is a captured result from the real proof page.
+
+19
+00:00:48,350 --> 00:00:51,950
+The weekly shop should not require a weekly debate.
+
+20
+00:00:51,950 --> 00:00:53,950
+It should require a record.
+
+21
+00:00:53,950 --> 00:00:54,350
+Precedent.

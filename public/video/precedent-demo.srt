@@ -1,0 +1,147 @@
+1
+00:00:00,650 --> 00:00:04,901
+The weekly shop is full of decisions you have already made.
+
+2
+00:00:04,901 --> 00:00:05,674
+Which coffee?
+
+3
+00:00:05,674 --> 00:00:07,993
+When is the premium worth it?
+
+4
+00:00:07,993 --> 00:00:11,858
+What if your AI remembered why it got something wrong?
+
+5
+00:00:14,650 --> 00:00:17,277
+Meet Precedent, a household replenishment agent.
+
+6
+00:00:17,277 --> 00:00:19,028
+Your shopping rules, remembered.
+
+7
+00:00:19,028 --> 00:00:22,530
+Add the things you buy again and again.
+
+8
+00:00:22,530 --> 00:00:28,221
+The dashboard separates what is handled, what needs you, and what is blocked.
+
+9
+00:00:28,221 --> 00:00:31,286
+Each decision carries the rule behind it.
+
+10
+00:00:31,286 --> 00:00:34,350
+This is a demo, not a checkout.
+
+11
+00:00:35,650 --> 00:00:39,283
+Here is the coffee story from the recorded demo.
+
+12
+00:00:39,283 --> 00:00:44,531
+A twenty-two percent price increase triggers rule two: switch to the cheaper roaster.
+
+13
+00:00:44,531 --> 00:00:48,569
+But the recorded return says the beans were too acidic.
+
+14
+00:00:48,569 --> 00:00:53,817
+The correction becomes rule seven: pay the premium and stay with Roaster A.
+
+15
+00:00:53,817 --> 00:00:57,854
+The new rule supersedes the old one, without erasing it.
+
+16
+00:00:57,854 --> 00:01:03,102
+Next time the price jumps, the agent follows the correction and remembers why.
+
+17
+00:01:03,102 --> 00:01:08,350
+In the same eight-item replay, routine autonomy rises from zero to eighty-six percent.
+
+18
+00:01:09,650 --> 00:01:12,859
+Memory also needs a way to handle disagreement.
+
+19
+00:01:12,859 --> 00:01:16,067
+Rule one says to buy the house blend.
+
+20
+00:01:16,067 --> 00:01:19,276
+Rule eight says to hold off on beans.
+
+21
+00:01:19,276 --> 00:01:21,682
+Both apply to the same restock.
+
+22
+00:01:21,682 --> 00:01:24,088
+Precedent pauses instead of silently guessing.
+
+23
+00:01:24,088 --> 00:01:28,099
+Here is the real interface: buy it, then explain why.
+
+24
+00:01:28,099 --> 00:01:30,104
+The answer becomes rule nine.
+
+25
+00:01:30,104 --> 00:01:35,719
+It overrules the conflicting skip rule, while rule one stays active as supporting history.
+
+26
+00:01:35,719 --> 00:01:41,334
+The basket now cites the new rule, and the audit has no unresolved conflicts.
+
+27
+00:01:41,334 --> 00:01:47,350
+Learning is a visible change in the record, not a hidden change to a prompt.
+
+28
+00:01:48,650 --> 00:01:52,320
+The public sandbox and the mainnet record are separate.
+
+29
+00:01:52,320 --> 00:01:55,990
+Walrus Memory holds twenty recorded memories on Sui mainnet.
+
+30
+00:01:55,990 --> 00:01:59,253
+Tatum provides the GraphQL gateway used to check
+
+31
+00:01:59,253 --> 00:02:03,738
+that the account is active and the configured delegate is registered.
+
+32
+00:02:03,738 --> 00:02:08,224
+This is an actual saved result from the live proof page.
+
+33
+00:02:08,224 --> 00:02:12,710
+It verifies the account and delegate, not every individual memory transaction.
+
+34
+00:02:14,650 --> 00:02:18,012
+The weekly shop should not require a weekly debate.
+
+35
+00:02:18,012 --> 00:02:19,879
+It should require a record.
+
+36
+00:02:19,879 --> 00:02:24,735
+Precedent: written in your words, cited before it acts, superseded rather than erased.
+
+37
+00:02:24,735 --> 00:02:27,350
+Try the demo and inspect the proof.
