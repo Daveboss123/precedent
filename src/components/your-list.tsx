@@ -26,11 +26,45 @@ const KINDS: { value: Domain; label: string }[] = [
 ];
 
 const STARTERS: NewItemInput[] = [
-  { name: 'Olive oil', vendor: 'Green Grocer', price: 14, domain: 'pantry', cadence: 'monthly', image: '/products/olive-oil.jpg' },
-  { name: 'Dish soap', vendor: 'Corner shop', price: 4.5, domain: 'household', cadence: 'every other month', image: '/products/dish-soap.jpg' },
-  { name: 'Paper towels', vendor: 'Corner shop', price: 6, domain: 'household', cadence: 'monthly', image: '/products/paper-towels.jpg' },
-  { name: 'Pasta', vendor: 'Green Grocer', price: 3.5, domain: 'pantry', cadence: 'monthly', image: '/products/pasta.jpg' },
-  { name: 'Sparkling water', vendor: 'Green Grocer', price: 5, domain: 'pantry', cadence: 'weekly' },
+  {
+    name: 'Olive oil',
+    vendor: 'Green Grocer',
+    price: 14,
+    domain: 'pantry',
+    cadence: 'monthly',
+    image: '/products/olive-oil.jpg',
+  },
+  {
+    name: 'Dish soap',
+    vendor: 'Corner shop',
+    price: 4.5,
+    domain: 'household',
+    cadence: 'every other month',
+    image: '/products/dish-soap.jpg',
+  },
+  {
+    name: 'Paper towels',
+    vendor: 'Corner shop',
+    price: 6,
+    domain: 'household',
+    cadence: 'monthly',
+    image: '/products/paper-towels.jpg',
+  },
+  {
+    name: 'Pasta',
+    vendor: 'Green Grocer',
+    price: 3.5,
+    domain: 'pantry',
+    cadence: 'monthly',
+    image: '/products/pasta.jpg',
+  },
+  {
+    name: 'Sparkling water',
+    vendor: 'Green Grocer',
+    price: 5,
+    domain: 'pantry',
+    cadence: 'weekly',
+  },
 ];
 
 export function YourList({ items, busy, onAdd, onPhoto, onRemove }: Props) {
@@ -185,7 +219,7 @@ export function YourList({ items, busy, onAdd, onPhoto, onRemove }: Props) {
 
         <form className="list-add-form" onSubmit={submitOne}>
           <div className="list-photo-field">
-            <label className={`list-photo-pick ${photo ? 'has-photo' : ''}`}>
+            <label className="list-photo-pick">
               {photo ? (
                 <img src={photo} alt="" />
               ) : (
@@ -211,7 +245,7 @@ export function YourList({ items, busy, onAdd, onPhoto, onRemove }: Props) {
               <small>
                 {photo
                   ? 'Shown on the item card. JPG, PNG or WebP.'
-                  : 'Optional. JPG, PNG or WebP, cropped square.'}
+                  : 'Optional. JPG, PNG or WebP, fitted to a square.'}
               </small>
               {photo && (
                 <button type="button" className="list-photo-remove" onClick={clearPhoto}>

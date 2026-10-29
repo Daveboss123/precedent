@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 
 import { jsonError } from '../../../lib/http.ts';
-import { deleteItemImage, parseImageUpload, saveItemImage } from '../../../lib/item-images.ts';
+import {
+  deleteItemImage,
+  parseImageUpload,
+  saveItemImage,
+} from '../../../lib/item-images.ts';
 import type { ItemImage } from '../../../lib/item-images.ts';
 import { readItems, writeItems } from '../../../lib/items-store.ts';
 import { normaliseItem } from '../../../lib/recurring.ts';
@@ -39,13 +43,19 @@ export async function POST(request: Request) {
     const record = recordOf(entry);
     if (!record) continue;
 
-    const upload = typeof record.image === 'string' && record.image.startsWith('data:')
-      ? record.image
-      : null;
+    const upload =
+      typeof record.image === 'string' && record.image.startsWith('data:')
+        ? record.image
+        : null;
     const parsed = upload ? parseImageUpload(upload) : {};
     if (parsed.error) return jsonError(parsed.error);
 
-    const item = normaliseItem({ ...record, image: upload ? null : record.image });
+    const item = normaliseItem({
+      ...record,
+      id: undefined,
+      createdAt: undefined,
+      image: upload ? null : record.image,
+    });
     if (!item) continue;
 
     const key = `${item.name.toLowerCase()}::${item.vendor.toLowerCase()}`;

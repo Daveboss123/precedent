@@ -96,7 +96,7 @@ npm test
 npx tsc --noEmit
 ```
 
-65 tests cover resolution, supersession chains, the Auditor, repository behaviour, the file allocator, and Tatum verification. The resolver is pure and deterministic; the memory boundary is a narrow interface so the same decision code runs against Walrus, Redis, or a test double.
+73 tests cover resolution, supersession chains, the Auditor, repository behaviour, item photos, the file allocator, and Tatum verification. The resolver is pure and deterministic; the memory boundary is a narrow interface so the same decision code runs against Walrus, Redis, or a test double.
 
 ## Structure
 
@@ -114,7 +114,7 @@ tests/             resolver, supersession, audit, repository, Tatum
 - Mainnet is append-only in the product. The UI refuses to delete a Walrus memory.
 - The editable list and the decision log are separate from memory on purpose.
 - The public demo is a separate store because a visitor cannot be allowed to append to the submission record.
-- An added item can carry its own photo. The browser crops it to a square, and the demo store keeps the uploaded image separately from the list; neither the photo nor the list is written to Walrus Memory.
+- An added item can carry its own photo. The browser fits it to a square, and the demo store keeps the uploaded image separately from the list; neither the photo nor the list is written to Walrus Memory.
 
 ## Credits
 

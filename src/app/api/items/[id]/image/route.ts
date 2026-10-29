@@ -25,7 +25,7 @@ export async function GET(
     headers: {
       'Content-Type': image.contentType,
       'Content-Length': String(blob.size),
-      'Cache-Control': 'public, max-age=31536000, immutable',
+      'Cache-Control': 'no-store',
       'X-Content-Type-Options': 'nosniff',
     },
   });
