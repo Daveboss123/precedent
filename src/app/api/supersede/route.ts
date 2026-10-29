@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   if (!action || !ACTIONS.includes(action)) return jsonError('Unknown action.');
 
   const reason = (body.reason ?? '').trim();
-  if (!reason) return jsonError('A reason is required — it becomes the new precedent.');
+  if (!reason) return jsonError('A reason is required. It becomes the new precedent.');
 
   const rt = getRuntime();
 

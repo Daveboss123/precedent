@@ -31,7 +31,7 @@ export function Timeline({ precedents, mode }: Props) {
         <span>
           <i className="legend-dot legend-dot--overruled" /> overruled
         </span>
-        <span>append-only — nothing is deleted</span>
+        <span>append-only. Nothing is deleted.</span>
       </div>
 
       {roots.map((root) => {

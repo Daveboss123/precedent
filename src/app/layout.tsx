@@ -8,14 +8,14 @@ import './site.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Precedent — the weekly shop, handled',
+    default: 'Precedent: the weekly shop, handled',
     template: '%s · Precedent',
   },
   description:
     'Precedent learns how you like to shop, answers the small questions once, and handles the weekly restock from there.',
   applicationName: 'Precedent',
   openGraph: {
-    title: 'Precedent — the weekly shop, handled',
+    title: 'Precedent: the weekly shop, handled',
     description:
       'A reorder agent that learns your rules and keeps the weekly shop moving.',
     type: 'website',

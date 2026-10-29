@@ -162,6 +162,10 @@ export function Ledger() {
     return post('/api/items', { items });
   }
 
+  async function setItemPhoto(id: string, image: string): Promise<boolean> {
+    return post(`/api/items/${encodeURIComponent(id)}/image`, { image });
+  }
+
   if (!state && loading) {
     return (
       <div className="loading">
@@ -226,7 +230,7 @@ export function Ledger() {
     list: String(state.items.length),
     memory: String(state.precedents.length),
     auditor: String(state.findings.length),
-    limits: '—',
+    limits: '',
   };
 
   return (
@@ -245,7 +249,9 @@ export function Ledger() {
               aria-current={view === item.id ? 'page' : undefined}
             >
               <span className="rail-link-label">{item.label}</span>
-              <span className="rail-count">{counts[item.id]}</span>
+              {counts[item.id] && (
+                <span className="rail-count">{counts[item.id]}</span>
+              )}
             </button>
           ))}
         </nav>
@@ -433,6 +439,7 @@ export function Ledger() {
             items={state.items}
             busy={working}
             onAdd={addItems}
+            onPhoto={setItemPhoto}
             onRemove={removeItem}
           />
         )}
@@ -547,7 +554,7 @@ export function Ledger() {
                           <td className="log-cited">
                             {entry.cited.length > 0
                               ? entry.cited.map((id) => `#${id}`).join(', ')
-                              : '—'}
+                              : 'None'}
                           </td>
                         </tr>
                       ))}
@@ -669,7 +676,7 @@ function labelFor(view: View): string {
 }
 
 function short(value: string | null | undefined): string {
-  if (!value) return '—';
+  if (!value) return 'Not set';
   return value.length > 16 ? `${value.slice(0, 8)}…${value.slice(-6)}` : value;
 }
 

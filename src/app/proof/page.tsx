@@ -145,7 +145,7 @@ export default function ProofPage() {
             </h2>
             <p>
               A verification badge is only useful if it is specific about its
-              edges. Here is what the live check above confirms — and what it
+              edges. Here is what the live check above confirms, and what it
               leaves to you.
             </p>
           </div>
@@ -217,7 +217,7 @@ export default function ProofPage() {
             </div>
             <p>
               Not a preferences file. A history of decisions, kept in the
-              words that made them — including the ones that were later
+              words that made them, including the ones that were later
               overruled.
             </p>
           </div>
@@ -228,7 +228,7 @@ export default function ProofPage() {
               <div className="pf-shelf-item">
                 <b>Rules</b>
                 <p>
-                  What to buy, switch, or skip — in the words the user actually
+                  What to buy, switch, or skip, in the words the user actually
                   used.
                 </p>
               </div>

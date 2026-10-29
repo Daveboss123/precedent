@@ -1,11 +1,18 @@
 import { NextResponse } from 'next/server';
 
 import { jsonError } from '../../../lib/http.ts';
+import { deleteItemImage, parseImageUpload, saveItemImage } from '../../../lib/item-images.ts';
+import type { ItemImage } from '../../../lib/item-images.ts';
 import { readItems, writeItems } from '../../../lib/items-store.ts';
 import { normaliseItem } from '../../../lib/recurring.ts';
+import type { RecurringItem } from '../../../lib/recurring.ts';
 import { buildState, invalidateState } from '../../../lib/state.ts';
 
 export const dynamic = 'force-dynamic';
+
+function recordOf(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
+}
 
 export async function GET() {
   return NextResponse.json({ items: await readItems() });
@@ -27,22 +34,41 @@ export async function POST(request: Request) {
     items.map((item) => `${item.name.toLowerCase()}::${item.vendor.toLowerCase()}`),
   );
 
-  const added = [];
+  const added: Array<{ item: RecurringItem; upload?: ItemImage }> = [];
   for (const entry of raw.slice(0, 50)) {
-    const item = normaliseItem(entry);
+    const record = recordOf(entry);
+    if (!record) continue;
+
+    const upload = typeof record.image === 'string' && record.image.startsWith('data:')
+      ? record.image
+      : null;
+    const parsed = upload ? parseImageUpload(upload) : {};
+    if (parsed.error) return jsonError(parsed.error);
+
+    const item = normaliseItem({ ...record, image: upload ? null : record.image });
     if (!item) continue;
 
     const key = `${item.name.toLowerCase()}::${item.vendor.toLowerCase()}`;
     if (known.has(key)) continue;
     known.add(key);
-    added.push(item);
+    added.push({ item, upload: parsed.image });
   }
 
   if (added.length === 0) {
     return jsonError('Those items are already on your list.');
   }
 
-  await writeItems([...items, ...added]);
+  try {
+    for (const entry of added) {
+      if (!entry.upload) continue;
+      await saveItemImage(entry.item.id, entry.upload);
+      entry.item.image = `/api/items/${entry.item.id}/image?v=${Date.now()}`;
+    }
+  } catch {
+    return jsonError('That photo could not be saved. Try a smaller file.', 500);
+  }
+
+  await writeItems([...items, ...added.map((entry) => entry.item)]);
   invalidateState();
   return NextResponse.json(await buildState());
 }
@@ -56,6 +82,7 @@ export async function DELETE(request: Request) {
   if (next.length === items.length) return jsonError('Item not found.');
 
   await writeItems(next);
+  await deleteItemImage(id).catch(() => undefined);
   invalidateState();
   return NextResponse.json(await buildState());
 }

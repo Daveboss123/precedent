@@ -121,6 +121,15 @@ export function imageFor(
   return CATEGORY_IMAGE[category] ?? CATEGORY_IMAGE[domain] ?? null;
 }
 
+/** Only photos we ship, or a photo uploaded through the item API. */
+export function isStoredImage(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+  if (/^\/products\/[a-z0-9][a-z0-9._-]*\.(?:jpe?g|png|webp)$/i.test(value)) {
+    return true;
+  }
+  return /^\/api\/items\/[a-zA-Z0-9-]+\/image(?:\?v=\d+)?$/.test(value);
+}
+
 export function normaliseItem(input: unknown): RecurringItem | null {
   if (!input || typeof input !== 'object') return null;
   const record = input as Record<string, unknown>;
@@ -153,10 +162,7 @@ export function normaliseItem(input: unknown): RecurringItem | null {
       .slice(0, 80) || 'Your usual store';
 
   const cadence = isCadence(record.cadence) ? record.cadence : 'monthly';
-  const image =
-    typeof record.image === 'string' && record.image.startsWith('/products/')
-      ? record.image
-      : imageFor(name, inferredCategory, domain);
+  const image = isStoredImage(record.image) ? record.image : null;
 
   return {
     id:

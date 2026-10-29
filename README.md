@@ -1,10 +1,10 @@
 # Precedent
 
-**The weekly shop, handled — without the weekly debate.**
+**The weekly shop, handled. No weekly debate.**
 
 Precedent is a household replenishment agent whose memory is its case law. It learns the rules you already have, cites them before it spends your money, and keeps the old rule on the record when you correct it.
 
-Built for **Tatum × Walrus — Total Recall, Track 2**.
+Built for **Tatum × Walrus: Total Recall, Track 2**.
 
 - **Live app:** https://precedent-household.vercel.app
 - **The record:** https://precedent-household.vercel.app/proof
@@ -17,7 +17,7 @@ Most “AI shopping” demos ask you to configure preferences. Precedent starts 
 Every decision is a small case:
 
 1. **A rule is written in your words.** “Pay the premium and stay with Roaster A. The cheaper beans were too acidic.”
-2. **It is cited before the next spend.** “House blend beans — $18.00. Cited #7.”
+2. **It is cited before the next spend.** “House blend beans, $18.00. Cited #7.”
 3. **A correction does not overwrite it.** The old rule stays on the record; a supersession record names the new one that governs.
 4. **Limits are checked first.** A monthly ceiling, an ask-above amount, and hard no’s are not preferences. No answer can learn around them.
 
@@ -114,6 +114,7 @@ tests/             resolver, supersession, audit, repository, Tatum
 - Mainnet is append-only in the product. The UI refuses to delete a Walrus memory.
 - The editable list and the decision log are separate from memory on purpose.
 - The public demo is a separate store because a visitor cannot be allowed to append to the submission record.
+- An added item can carry its own photo. The browser crops it to a square, and the demo store keeps the uploaded image separately from the list; neither the photo nor the list is written to Walrus Memory.
 
 ## Credits
 

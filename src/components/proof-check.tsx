@@ -94,15 +94,15 @@ export function ProofCheck() {
         <dl className="pf-check-grid">
           <div>
             <dt>Checkpoint</dt>
-            <dd>{verification?.checkpoint ? `#${verification.checkpoint}` : '—'}</dd>
+            <dd>{verification?.checkpoint ? `#${verification.checkpoint}` : 'Not yet'}</dd>
           </div>
           <div>
             <dt>Latency</dt>
-            <dd>{verification?.latencyMs ? `${verification.latencyMs} ms` : '—'}</dd>
+            <dd>{verification?.latencyMs ? `${verification.latencyMs} ms` : 'Not yet'}</dd>
           </div>
           <div>
             <dt>Checked</dt>
-            <dd>{verification ? formatTime(verification.checkedAt) : '—'}</dd>
+            <dd>{verification ? formatTime(verification.checkedAt) : 'Not yet'}</dd>
           </div>
           <div>
             <dt>Gateway</dt>
@@ -145,13 +145,13 @@ export function ProofCheck() {
 }
 
 function displayEndpoint(endpoint: string | undefined): string {
-  if (!endpoint) return '—';
+  if (!endpoint) return 'Not yet';
   return endpoint.replace(/^https?:\/\//, '').replace(/\/$/, '');
 }
 
 function formatTime(value: string): string {
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
+  if (Number.isNaN(date.getTime())) return 'Not yet';
   return date.toLocaleTimeString('en-GB', {
     timeZone: 'UTC',
     hour: '2-digit',

@@ -1,18 +1,20 @@
 'use client';
 
-import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 
 import type { Domain } from '../core/types.ts';
+import { itemImageFromFile } from '../lib/image-file.ts';
 import type { Cadence, ListItem, NewItemInput } from '../lib/recurring.ts';
 import { CADENCES, inferCategory, parseItemLines } from '../lib/recurring.ts';
-import { StreamingArt } from './illustrations.tsx';
+import { BasketArt } from './illustrations.tsx';
+import { ItemPhoto } from './item-photo.tsx';
 
 interface Props {
   items: ListItem[];
   busy: boolean;
   onAdd: (items: NewItemInput[]) => Promise<boolean>;
+  onPhoto: (id: string, image: string) => Promise<boolean>;
   onRemove: (id: string) => Promise<boolean>;
 }
 
@@ -24,14 +26,14 @@ const KINDS: { value: Domain; label: string }[] = [
 ];
 
 const STARTERS: NewItemInput[] = [
-  { name: 'Olive oil', vendor: 'Green Grocer', price: 14, domain: 'pantry', cadence: 'monthly' },
-  { name: 'Dish soap', vendor: 'Corner shop', price: 4.5, domain: 'household', cadence: 'every other month' },
-  { name: 'Paper towels', vendor: 'Corner shop', price: 6, domain: 'household', cadence: 'monthly' },
-  { name: 'Pasta', vendor: 'Green Grocer', price: 3.5, domain: 'pantry', cadence: 'monthly' },
+  { name: 'Olive oil', vendor: 'Green Grocer', price: 14, domain: 'pantry', cadence: 'monthly', image: '/products/olive-oil.jpg' },
+  { name: 'Dish soap', vendor: 'Corner shop', price: 4.5, domain: 'household', cadence: 'every other month', image: '/products/dish-soap.jpg' },
+  { name: 'Paper towels', vendor: 'Corner shop', price: 6, domain: 'household', cadence: 'monthly', image: '/products/paper-towels.jpg' },
+  { name: 'Pasta', vendor: 'Green Grocer', price: 3.5, domain: 'pantry', cadence: 'monthly', image: '/products/pasta.jpg' },
   { name: 'Sparkling water', vendor: 'Green Grocer', price: 5, domain: 'pantry', cadence: 'weekly' },
 ];
 
-export function YourList({ items, busy, onAdd, onRemove }: Props) {
+export function YourList({ items, busy, onAdd, onPhoto, onRemove }: Props) {
   const [name, setName] = useState('');
   const [vendor, setVendor] = useState('');
   const [price, setPrice] = useState('10');
@@ -39,6 +41,10 @@ export function YourList({ items, busy, onAdd, onRemove }: Props) {
   const [cadence, setCadence] = useState<Cadence>('monthly');
   const [paste, setPaste] = useState('');
   const [fileName, setFileName] = useState('');
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [photoName, setPhotoName] = useState('');
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const photoInput = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,6 +70,7 @@ export function YourList({ items, busy, onAdd, onRemove }: Props) {
         category: inferCategory(trimmed),
         domain: kind,
         cadence,
+        image: photo,
       },
     ]);
 
@@ -71,10 +78,40 @@ export function YourList({ items, busy, onAdd, onRemove }: Props) {
       setName('');
       setVendor('');
       setPrice('10');
+      setPhoto(null);
+      setPhotoName('');
+      if (photoInput.current) photoInput.current.value = '';
       setMessage(`Added ${trimmed}. It’s in this week’s basket.`);
     } else {
       setError('That item is already on your list, or it could not be saved.');
     }
+  }
+
+  async function choosePhoto(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    setMessage(null);
+    setError(null);
+    setPhotoBusy(true);
+    try {
+      const data = await itemImageFromFile(file);
+      setPhoto(data);
+      setPhotoName(file.name);
+    } catch (err) {
+      setPhoto(null);
+      setPhotoName('');
+      setError(err instanceof Error ? err.message : 'That photo could not be used.');
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
+  function clearPhoto() {
+    setPhoto(null);
+    setPhotoName('');
+    if (photoInput.current) photoInput.current.value = '';
   }
 
   async function addPaste() {
@@ -147,6 +184,43 @@ export function YourList({ items, busy, onAdd, onRemove }: Props) {
         </div>
 
         <form className="list-add-form" onSubmit={submitOne}>
+          <div className="list-photo-field">
+            <label className={`list-photo-pick ${photo ? 'has-photo' : ''}`}>
+              {photo ? (
+                <img src={photo} alt="" />
+              ) : (
+                <span aria-hidden="true">{photoBusy ? '…' : '+'}</span>
+              )}
+              <input
+                ref={photoInput}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={(event) => void choosePhoto(event)}
+                disabled={photoBusy || busy}
+                aria-label="Upload a photo of the item"
+              />
+            </label>
+            <div className="list-photo-copy">
+              <b>
+                {photoBusy
+                  ? 'Preparing photo…'
+                  : photo
+                    ? photoName
+                    : 'Add a photo of the item'}
+              </b>
+              <small>
+                {photo
+                  ? 'Shown on the item card. JPG, PNG or WebP.'
+                  : 'Optional. JPG, PNG or WebP, cropped square.'}
+              </small>
+              {photo && (
+                <button type="button" className="list-photo-remove" onClick={clearPhoto}>
+                  Remove photo
+                </button>
+              )}
+            </div>
+          </div>
+
           <div className="field list-field-name">
             <label htmlFor="item-name">What do you buy?</label>
             <input
@@ -211,7 +285,10 @@ export function YourList({ items, busy, onAdd, onRemove }: Props) {
             </select>
           </div>
 
-          <button className="btn btn--dark list-add-button" disabled={busy || !name.trim()}>
+          <button
+            className="btn btn--dark list-add-button"
+            disabled={busy || photoBusy || !name.trim()}
+          >
             {busy ? 'Adding…' : 'Add to my list'}
           </button>
         </form>
@@ -222,7 +299,7 @@ export function YourList({ items, busy, onAdd, onRemove }: Props) {
               Paste a list instead <span aria-hidden="true">+</span>
             </summary>
             <div className="list-paste-body">
-              <p>One item per line. Name, store, price — in any order.</p>
+              <p>One item per line, with name, store and price in any order.</p>
               <textarea
                 rows={5}
                 value={paste}
@@ -303,7 +380,13 @@ export function YourList({ items, busy, onAdd, onRemove }: Props) {
         ) : (
           <div className="list-rows">
             {items.map((item) => (
-              <ListRow key={item.id} item={item} busy={busy} onRemove={remove} />
+              <ListRow
+                key={item.id}
+                item={item}
+                busy={busy}
+                onPhoto={onPhoto}
+                onRemove={remove}
+              />
             ))}
           </div>
         )}
@@ -315,12 +398,35 @@ export function YourList({ items, busy, onAdd, onRemove }: Props) {
 function ListRow({
   item,
   busy,
+  onPhoto,
   onRemove,
 }: {
   item: ListItem;
   busy: boolean;
+  onPhoto: (id: string, image: string) => Promise<boolean>;
   onRemove: (id: string) => Promise<void>;
 }) {
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+
+  async function choosePhoto(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    setPhotoBusy(true);
+    setPhotoError(null);
+    try {
+      const data = await itemImageFromFile(file);
+      const ok = await onPhoto(item.id, data);
+      if (!ok) setPhotoError('That photo could not be saved.');
+    } catch (err) {
+      setPhotoError(err instanceof Error ? err.message : 'That photo could not be used.');
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
   const status =
     item.decision.action === 'act'
       ? 'handled'
@@ -338,9 +444,9 @@ function ListRow({
     <div className={`list-row list-row--${status}`}>
       <div className="list-thumb">
         {item.image ? (
-          <Image src={item.image} alt="" fill sizes="56px" />
+          <ItemPhoto src={item.image} sizes="56px" />
         ) : (
-          <StreamingArt />
+          <BasketArt />
         )}
       </div>
 
@@ -366,6 +472,20 @@ function ListRow({
           <a className="list-row-link" href="#limits">
             See limits →
           </a>
+        )}
+        <label className="list-photo-change">
+          {photoBusy ? 'Saving…' : item.image ? 'Change photo' : 'Add photo'}
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={(event) => void choosePhoto(event)}
+            disabled={busy || photoBusy}
+          />
+        </label>
+        {photoError && (
+          <span className="list-photo-error" role="alert">
+            {photoError}
+          </span>
         )}
         <button
           className="list-remove"

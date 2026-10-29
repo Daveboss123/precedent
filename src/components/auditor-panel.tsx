@@ -34,7 +34,7 @@ export function AuditorPanel({
 
     if (/(balance|wallet|bank|finance)/.test(query)) {
       setAnswer({
-        text: "I can't see the finance namespace. I can read precedents, observations and outcomes — not your balance.",
+        text: "I can't see the finance namespace. I can read precedents, observations and outcomes, not your balance.",
         refusal: true,
       });
       return;
@@ -70,7 +70,7 @@ export function AuditorPanel({
 
     setAnswer({
       text: cited
-        .map((precedent) => `#${precedent.id} — ${precedent.reason}`)
+        .map((precedent) => `#${precedent.id} · ${precedent.reason}`)
         .join(' '),
       refusal: false,
     });

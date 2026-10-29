@@ -149,7 +149,7 @@ async function buildStateUncached(): Promise<AppState> {
     queue.push({
       candidate: itemToCandidate(item),
       decision: item.decision,
-      image: item.image ?? imageFor(item.name, item.category, item.domain),
+      image: item.image,
       rule: item.rule,
     });
   }

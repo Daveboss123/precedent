@@ -1,11 +1,11 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 
 import type { QueueItem } from '../lib/state.ts';
-import { MonitorArt, StreamingArt } from './illustrations.tsx';
+import { BasketArt, StreamingArt } from './illustrations.tsx';
+import { ItemPhoto } from './item-photo.tsx';
 
 export type AnswerAction = 'buy' | 'switch_brand' | 'defer';
 
@@ -53,11 +53,11 @@ export function DecisionCard({
       : decision.action === 'block'
         ? 'Blocked by your limits.'
         : decision.cause === 'no_precedent'
-          ? 'No rule yet — what should it do?'
+          ? 'No rule yet. What should it do?'
           : decision.cause === 'precedent_conflict'
-            ? 'Two rules disagree — which one wins?'
+            ? 'Two rules disagree. Which one wins?'
             : decision.cause === 'charter_threshold'
-              ? `Above your ${money(approvalAbove)} limit — buy it?`
+              ? `Above your ${money(approvalAbove)} limit. Buy it?`
               : 'Confirm before it buys.';
 
   const cited =
@@ -102,11 +102,11 @@ export function DecisionCard({
     <article className={`decision decision--${status}`}>
       <div className="decision-photo">
         {item.image ? (
-          <Image src={item.image} alt="" fill sizes="120px" />
+          <ItemPhoto src={item.image} sizes="120px" />
         ) : candidate.category === 'subscription' ? (
           <StreamingArt />
         ) : (
-          <MonitorArt />
+          <BasketArt />
         )}
       </div>
 
