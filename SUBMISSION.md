@@ -20,6 +20,8 @@ Precedent is a household replenishment agent whose memory is its case law. It le
 
 The product is a reorder ledger, not a chat window. Every decision is sorted into handled, needs you, or blocked, and every handled decision names the precedent behind it. Corrections create a supersession record instead of deleting history.
 
+**Built with:** Next.js, TypeScript, Walrus Memory on Sui mainnet, Tatum's Sui GraphQL gateway, Redis, and Remotion.
+
 ## The 60-second path
 
 1. Open the ledger and find the coffee conflict under **Needs you**.
