@@ -38,6 +38,7 @@ The mainnet submission used **20 memories** in the `precedent` namespace on Sui 
 | | |
 | --- | --- |
 | MemWal account | `0x9ed016de2fbfa51d73363495e7158e40f8761a0c253c9198c430423d624f6d55` |
+| Owner wallet | `0xbba41e3118ceacca5db4599e4858e7968c4c46bce118659e66e2a39b039c00bf` |
 | Delegate | `43d54a89a0aadd1a1ef32233c86e14347a87afc1b109ff0cbacc700ca9c276ca` |
 | Namespace | `precedent` |
 | Evidence | `.data/mainnet-smoke.json` when running the smoke script |
