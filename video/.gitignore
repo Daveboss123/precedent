@@ -1,0 +1,7 @@
+node_modules
+out
+.raw
+.sandbox
+public/captures
+public/audio
+public/grain.png

@@ -1,0 +1,31 @@
+{
+  "name": "precedent-video",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Remotion demo film for Precedent, assembled from real captures of the running product.",
+  "scripts": {
+    "capture": "node capture/run.mjs",
+    "audio": "node capture/audio.mjs",
+    "recaption": "node capture/recaption.mjs",
+    "prepare": "npm run capture && npm run audio",
+    "studio": "remotion studio src/index.jsx",
+    "render": "remotion render src/index.jsx PrecedentDemo out/precedent-demo.mp4",
+    "render:short": "remotion render src/index.jsx PrecedentShort out/precedent-55s.mp4",
+    "poster": "remotion still src/index.jsx PrecedentDemo out/poster.png --frame=66",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.538",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "4.0.538"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "playwright-core": "1.64.1",
+    "typescript": "^6.0.3"
+  }
+}
