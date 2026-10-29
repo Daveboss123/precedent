@@ -15,6 +15,7 @@ import { Wordmark } from './wordmark.tsx';
 const ACCOUNT = '0x9ed016de2fbfa51d73363495e7158e40f8761a0c253c9198c430423d624f6d55';
 const EXPLORER = `https://suivision.xyz/object/${ACCOUNT}`;
 const REPO = 'https://github.com/Daveboss123/precedent';
+const WRITEUP = 'https://davee0x.substack.com/p/the-memory-is-the-case-law-building';
 
 type State = 'Handled' | 'Needs you' | 'Blocked' | 'Rule needed';
 type Tone = 'handled' | 'ask' | 'block' | 'needed';
@@ -799,6 +800,9 @@ export function Landing() {
                 </a>
                 <a href={REPO} target="_blank" rel="noreferrer">
                   Source
+                </a>
+                <a href={WRITEUP} target="_blank" rel="noreferrer">
+                  Write-up
                 </a>
               </div>
             </div>

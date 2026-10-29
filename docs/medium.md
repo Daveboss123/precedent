@@ -1,5 +1,7 @@
 # The memory is the case law.
 
+*Published: https://davee0x.substack.com/p/the-memory-is-the-case-law-building*
+
 ### A household agent should remember why it was wrong, not just what it prefers. Precedent is my attempt to build one.
 
 *Total Recall · Track 2 · 6 min read*

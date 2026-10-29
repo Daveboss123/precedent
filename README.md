@@ -9,6 +9,7 @@ Built for **Tatum × Walrus: Total Recall, Track 2**.
 - **Live app:** https://precedent-household.vercel.app
 - **The record:** https://precedent-household.vercel.app/proof
 - **Source:** https://github.com/Daveboss123/precedent
+- **Write-up:** https://davee0x.substack.com/p/the-memory-is-the-case-law-building
 
 ## Demo films
 
